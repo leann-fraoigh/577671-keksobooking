@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Daria Myshlennikova](https://up.htmlacademy.ru/javascript/16/user/577671).
-* Наставник: `Неизвестно`.
+* Наставник: [Птетька Волобуев](https://htmlacademy.ru/profile/id635515).
 
 ---
 

@@ -139,7 +139,15 @@ var renderCards = function () {
     cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
     cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
     cardElement.querySelector('.popup__type').textContent = TYPES_EXPLAINED[card.offer.type];
-    cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
+    // Добавление числа комнат и гостей (склонение только для числа комнат  <= 20)
+    if (card.offer.rooms === 1) {
+      cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комната для ' + card.offer.guests + ' гостей';
+    } else if (card.offer.rooms < 5) {
+      cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
+    } else {
+      cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнат для ' + card.offer.guests + ' гостей';
+    }
+    // Конец добавления числа комнат и гостей
     cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
     cardElement.querySelector('.popup__features').textContent = card.offer.features.join(', ');
     cardElement.querySelector('.popup__description').textContent = card.offer.description;

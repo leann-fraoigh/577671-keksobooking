@@ -23,6 +23,8 @@ var MAP_FILTERS_ELEMENT = MAP_ELEMENT.querySelector('.map__filters-container');
 var PIN_TEMPLATE = document.querySelector('#pin')
 .content
 .querySelector('.map__pin');
+var PIN_WIDTH = 50;
+var PIN_HEIGTH = 70;
 var CARD_TEMPLATE = document.querySelector('#card')
 .content
 .querySelector('.map__card');
@@ -117,8 +119,8 @@ var renderPins = function () {
   var renderPin = function (card) {
 
     var pinElement = PIN_TEMPLATE.cloneNode(true);
-    pinElement.style.left = card.location.x - 25 + 'px';
-    pinElement.style.top = card.location.y - 70 + 'px';
+    pinElement.style.left = card.location.x - PIN_WIDTH / 2 + 'px';
+    pinElement.style.top = card.location.y - PIN_HEIGTH + 'px';
     pinElement.firstElementChild.src = card.author.avatar;
     pinElement.firstElementChild.alt = card.offer.title;
     return pinElement;

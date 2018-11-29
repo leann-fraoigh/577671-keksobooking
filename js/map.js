@@ -112,7 +112,7 @@ var getCards = function (toShuffle, cardsAmount) {
 };
 
 // Создание элемента со всеми пинами
-var renderPins = function () {
+var renderPins = function (sourceArr) {
   var fragment = document.createDocumentFragment();
 
   // Отрисовка одного пина
@@ -127,9 +127,8 @@ var renderPins = function () {
   };
 
   // Запись всех пинов
-  // Кажется, что получилось слишком запутанно, но как распутать, и нужно ли, -- не знаю.
   for (var i = 0; i < OBJECTS_AMOUNT; i++) {
-    fragment.appendChild(renderPin(cardsData[i]));
+    fragment.appendChild(renderPin(sourceArr[i]));
   }
 
   return fragment;
@@ -177,7 +176,7 @@ var renderCard = function (card) {
 var cardsData = getCards(arraysToShuffle, OBJECTS_AMOUNT);
 
 // Запускает создание и запись меток
-MAP_PINS_ELEMENT.appendChild(renderPins());
+MAP_PINS_ELEMENT.appendChild(renderPins(cardsData));
 
 // Запускает создание и запись карточки
 MAP_ELEMENT.insertBefore(renderCard(cardsData[0]), MAP_FILTERS_ELEMENT);

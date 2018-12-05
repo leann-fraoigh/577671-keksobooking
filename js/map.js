@@ -154,7 +154,24 @@ var renderCard = function (card) {
   }
   // Конец добавления числа комнат и гостей
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
-  cardElement.querySelector('.popup__features').textContent = card.offer.features.join(', ');
+
+  // Добавление иконок удобств
+  var featuresArray = cardElement.querySelectorAll('.popup__feature');
+
+  featuresArray.forEach(function (item) {
+    item.style.display = 'none';
+    console.log(card.offer.features);
+    for (var i = 0; i < card.offer.features.length; i++) {
+      var j = '--' + card.offer.features[i];
+      console.log(j);
+      if (item.className.includes(j) === true) {
+        item.style.display = '';
+        return;
+      }
+    }
+  });
+  // Конец добавления иконок удобств
+
   cardElement.querySelector('.popup__description').textContent = card.offer.description;
   // Вставка фото
   cardElement.querySelector('.popup__photo').src = card.offer.photos[0];

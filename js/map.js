@@ -160,10 +160,8 @@ var renderCard = function (card) {
 
   featuresArray.forEach(function (item) {
     item.style.display = 'none';
-    console.log(card.offer.features);
     for (var i = 0; i < card.offer.features.length; i++) {
       var j = '--' + card.offer.features[i];
-      console.log(j);
       if (item.className.includes(j) === true) {
         item.style.display = '';
         return;

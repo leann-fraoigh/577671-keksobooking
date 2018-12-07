@@ -1,5 +1,6 @@
 'use strict';
-
+// Клавиши
+var ENTER_KEYCODE = 13;
 var OBJECTS_AMOUNT = 8;
 // Данные о жилье
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
@@ -19,6 +20,12 @@ var GUESTS_MAX = 1000;
 var MAP_ELEMENT = document.querySelector('.map');
 var MAP_PINS_ELEMENT = MAP_ELEMENT.querySelector('.map__pins');
 var MAP_FILTERS_ELEMENT = MAP_ELEMENT.querySelector('.map__filters-container');
+var AD_FORM = document.querySelector('.ad-form');
+var PIN_MAIN = document.querySelector('.map__pin--main');
+var PIN_MAIN_WIDTH = 66;
+var PIN_MAIN_HEIGTH = 88;
+var ALL_SELECTS = document.querySelectorAll('select');
+var ALL_INPUTS = document.querySelectorAll('input');
 // Шаблоны
 var PIN_TEMPLATE = document.querySelector('#pin')
 .content
@@ -33,11 +40,6 @@ var arraysToShuffle = {
   titlesShuffled: TITLES.slice(),
   featuresShuffled: FEATURES.slice(),
   photosShuffled: PHOTOS.slice()
-};
-
-// Все равно получается не универсально из-за класса map--faded внутри? Но тогда нужно просто делать функцию отключения класса, принимающую на вход элемент и класс?..
-var mapUnfade = function (elementToUnfade) {
-  elementToUnfade.classList.remove('map--faded');
 };
 
 // Создтание раномных чисел.
@@ -58,6 +60,21 @@ var shuffle = function (arr) {
   }
 };
 
+// Выключалка и включалка полей форм
+var disable = function (arr) {
+  for (var i = 0; i < arr.length; i++) {
+    arr[i].disabled = true;
+  }
+};
+
+var enable = function (arr) {
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i].disabled === true) {
+      arr[i].disabled = false;
+    }
+  }
+};
+
 // Генерация одной карточки
 // Не уверена, что это нужно выделять в отдельную функцию
 var getCard = function (j) {
@@ -67,6 +84,7 @@ var getCard = function (j) {
   };
 
   var ret = {
+    cardID: 'AD' + j,
     author: {
       avatar: 'img/avatars/user0' + (j + 1) + '.png'
     },
@@ -123,6 +141,7 @@ var renderPins = function (sourceArr) {
     pinElement.style.top = card.location.y - PIN_HEIGTH + 'px';
     pinElement.firstElementChild.src = card.author.avatar;
     pinElement.firstElementChild.alt = card.offer.title;
+    pinElement.id = card.cardID;
     return pinElement;
   };
 
@@ -187,14 +206,83 @@ var renderCard = function (card) {
   return fragment;
 };
 
-// Генерирует массив случайных объектов
+var pinClickHandler = function (evt) {
+  var target = evt.target;
+  if (target.classList.contains('map__pin') && !target.classList.contains('map__pin--main')) {
+    var i = target.id.substring(2);
+    MAP_ELEMENT.insertBefore(renderCard(cardsData[i]), MAP_FILTERS_ELEMENT);
+  }
+};
+
+var setAddress = function () {
+  var y = PIN_MAIN.offsetTop + PIN_MAIN_HEIGTH;
+  var x = PIN_MAIN.offsetLeft + PIN_MAIN_WIDTH / 2;
+  AD_FORM.querySelector('#address').value = x + ', ' + y;
+};
+
+var setDefaulfAddress = function () {
+  var y = PIN_MAIN.offsetTop + PIN_MAIN_WIDTH / 2;
+  var x = PIN_MAIN.offsetLeft + PIN_MAIN_WIDTH / 2;
+  AD_FORM.querySelector('#address').value = x + ', ' + y;
+};
+
+// Запуск всего
+
+disable(ALL_SELECTS);
+
+disable(ALL_INPUTS);
+
 var cardsData = getCards(arraysToShuffle, OBJECTS_AMOUNT);
 
-// Запускает создание и запись меток
-MAP_PINS_ELEMENT.appendChild(renderPins(cardsData));
+setDefaulfAddress();
+
+PIN_MAIN.addEventListener('mouseup', function () {
+  enable(ALL_SELECTS);
+  enable(ALL_INPUTS);
+  MAP_ELEMENT.classList.remove('map--faded');
+  AD_FORM.classList.remove('ad-form--disabled');
+  setAddress();
+  MAP_PINS_ELEMENT.appendChild(renderPins(cardsData));
+});
+
+
+MAP_ELEMENT.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  pinClickHandler(evt);
+});
+
+
+MAP_ELEMENT.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    evt.preventDefault();
+    pinClickHandler(evt);
+  }
+});
+
+// Пусть тут старый код полежит немного, вдруг приодится. :)
 
 // Запускает создание и запись карточки
-MAP_ELEMENT.insertBefore(renderCard(cardsData[0]), MAP_FILTERS_ELEMENT);
+// MAP_ELEMENT.insertBefore(renderCard(cardsData[0]), MAP_FILTERS_ELEMENT);
 
-// Показывает карту
-mapUnfade(MAP_ELEMENT);
+// Вообще не нужная штука тепер
+// Все равно получается не универсально из-за класса map--faded внутри? Но тогда нужно просто делать функцию отключения класса, принимающую на вход элемент и класс?..
+// var mapUnfade = function (elementToUnfade) {
+//   elementToUnfade.classList.remove('map--faded');
+// };
+
+// // Показывает карту
+// mapUnfade(MAP_ELEMENT);
+
+// // Тогглер класса
+// var toggleClass = function (element, classToToggle) {
+// element.classList.toggle(classToToggle);
+// };
+// toggleClass(AD_FORM, 'ad-form--disabled');
+
+
+// Обработчик отпускания мыши
+// var MainPinMouseupHandler = function (element) {
+// toggleClass()
+// enable(allSelects);
+// enable(allInputs);
+// };

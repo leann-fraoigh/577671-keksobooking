@@ -39,10 +39,9 @@ var CARD_TEMPLATE = document.querySelector('#card')
 var arraysToShuffle = {
   titlesShuffled: TITLES.slice(),
   featuresShuffled: FEATURES.slice(),
-  photosShuffled: PHOTOS.slice()
 };
 
-// Создтание раномных чисел.
+// Создание раномных чисел.
 // [min, max) inclding min, excluding max
 var getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -76,12 +75,14 @@ var enable = function (arr) {
 };
 
 // Генерация одной карточки
-// Не уверена, что это нужно выделять в отдельную функцию
 var getCard = function (j) {
   var location = {
     x: getRandomInt(0, (MAP_ELEMENT.clientWidth + 1)),
     y: getRandomInt(MAP_HEIGTH_MIN, (MAP_HEIGTH_MAX + 1))
   };
+
+  var photos = PHOTOS.slice();
+  shuffle(photos);
 
   var ret = {
     cardID: 'AD' + j,
@@ -103,7 +104,7 @@ var getCard = function (j) {
       checkout: CHECKOUT_HOURS[getRandomInt(0, CHECKOUT_HOURS.length)],
       features: arraysToShuffle.featuresShuffled.slice(getRandomInt(0, 6)),
       description: '',
-      photos: arraysToShuffle.photosShuffled,
+      photos: photos,
     }
   };
 
@@ -153,7 +154,7 @@ var renderPins = function (sourceArr) {
   return fragment;
 };
 
-// Создание элемента с карточкой
+// Отрисовка элемента с карточкой
 var renderCard = function (card) {
   var fragment = document.createDocumentFragment();
 
@@ -190,6 +191,7 @@ var renderCard = function (card) {
   // Конец добавления иконок удобств
 
   cardElement.querySelector('.popup__description').textContent = card.offer.description;
+
   // Вставка фото
   cardElement.querySelector('.popup__photo').src = card.offer.photos[0];
   if (card.offer.photos.length > 1) {
@@ -258,31 +260,3 @@ MAP_ELEMENT.addEventListener('keydown', function (evt) {
     pinClickHandler(evt);
   }
 });
-
-// Пусть тут старый код полежит немного, вдруг приодится. :)
-
-// Запускает создание и запись карточки
-// MAP_ELEMENT.insertBefore(renderCard(cardsData[0]), MAP_FILTERS_ELEMENT);
-
-// Вообще не нужная штука тепер
-// Все равно получается не универсально из-за класса map--faded внутри? Но тогда нужно просто делать функцию отключения класса, принимающую на вход элемент и класс?..
-// var mapUnfade = function (elementToUnfade) {
-//   elementToUnfade.classList.remove('map--faded');
-// };
-
-// // Показывает карту
-// mapUnfade(MAP_ELEMENT);
-
-// // Тогглер класса
-// var toggleClass = function (element, classToToggle) {
-// element.classList.toggle(classToToggle);
-// };
-// toggleClass(AD_FORM, 'ad-form--disabled');
-
-
-// Обработчик отпускания мыши
-// var MainPinMouseupHandler = function (element) {
-// toggleClass()
-// enable(allSelects);
-// enable(allInputs);
-// };

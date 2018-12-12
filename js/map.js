@@ -210,8 +210,9 @@ var renderCard = function (card) {
 
 var pinClickHandler = function (evt) {
   var target = evt.target;
-  if (target.classList.contains('map__pin') && !target.classList.contains('map__pin--main')) {
-    var i = target.id.substring(2);
+  var targetButton = target.closest('button');
+  if (targetButton.classList.contains('map__pin') && !targetButton.classList.contains('map__pin--main')) {
+    var i = targetButton.id.substring(2);
     MAP_ELEMENT.insertBefore(renderCard(cardsData[i]), MAP_FILTERS_ELEMENT);
   }
 };

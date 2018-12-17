@@ -270,9 +270,6 @@ var setDefaulfAddress = function () {
   AD_FORM.querySelector('#address').value = x + ', ' + y;
 };
 
-
-
-
 // Запуск всего
 
 disable(ALL_SELECTS);

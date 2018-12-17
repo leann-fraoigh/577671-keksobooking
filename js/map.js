@@ -1,6 +1,7 @@
 'use strict';
 // Клавиши
 var ENTER_KEYCODE = 13;
+var ESC_KEYCODE = 27;
 var OBJECTS_AMOUNT = 8;
 // Данные о жилье
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
@@ -35,6 +36,8 @@ var PIN_HEIGTH = 70;
 var CARD_TEMPLATE = document.querySelector('#card')
 .content
 .querySelector('.map__card');
+var popup;
+var popupClose;
 
 var arraysToShuffle = {
   titlesShuffled: TITLES.slice(),
@@ -208,12 +211,50 @@ var renderCard = function (card) {
   return fragment;
 };
 
+// Удаление карточки
+
+var removeCard = function () {
+  if (popup) {
+    MAP_ELEMENT.removeChild(popup);
+    popup = undefined;
+  }
+};
+
+// Закрытие карточки
+
+var popupCloseClickHandler = function (evt) {
+  evt.preventDefault();
+  removeCard();
+};
+
+var popupKeydownHandler = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    evt.preventDefault();
+    removeCard();
+  }
+};
+
+var popupCloseKeydownHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    evt.preventDefault();
+    removeCard();
+  }
+};
+
+// Обработчик нажатия на пин
+
 var pinClickHandler = function (evt) {
   var target = evt.target;
   var targetButton = target.closest('button');
-  if (targetButton.classList.contains('map__pin') && !targetButton.classList.contains('map__pin--main')) {
+  if (targetButton && targetButton.classList.contains('map__pin') && !targetButton.classList.contains('map__pin--main')) {
+    removeCard();
     var i = targetButton.id.substring(2);
     MAP_ELEMENT.insertBefore(renderCard(cardsData[i]), MAP_FILTERS_ELEMENT);
+    popup = MAP_ELEMENT.querySelector('.map__card.popup');
+    popupClose = popup.querySelector('.popup__close');
+    popupClose.addEventListener('click', popupCloseClickHandler);
+    popupClose.addEventListener('keydown', popupCloseKeydownHandler);
+    document.addEventListener('keydown', popupKeydownHandler);
   }
 };
 
@@ -228,6 +269,9 @@ var setDefaulfAddress = function () {
   var x = PIN_MAIN.offsetLeft + PIN_MAIN_WIDTH / 2;
   AD_FORM.querySelector('#address').value = x + ', ' + y;
 };
+
+
+
 
 // Запуск всего
 

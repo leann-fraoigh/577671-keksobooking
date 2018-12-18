@@ -5,8 +5,28 @@ var ESC_KEYCODE = 27;
 var OBJECTS_AMOUNT = 8;
 // Данные о жилье
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
-var TYPES = ['palace', 'flat', 'house', 'bungalo'];
-var TYPES_EXPLAINED = {'palace': 'Дворец', 'flat': 'Квартира', 'house': 'Дом', 'bungalo': 'Бунгало'};
+
+var PROPERTY_TYPES = {
+  palace: {
+    type: 'Дворец',
+    minPrice: 10000,
+  },
+  flat: {
+    type: 'Квартира',
+    minPrice: 1000,
+  },
+  house: {
+    type: 'Дом',
+    minPrice: 5000,
+  },
+  bungalo: {
+    type: 'Бунгало',
+    minPrice: 0,
+  }
+};
+
+// var TYPES = ['palace', 'flat', 'house', 'bungalo'];
+// var TYPES_EXPLAINED = {'palace': 'Дворец', 'flat': 'Квартира', 'house': 'Дом', 'bungalo': 'Бунгало'};
 var ROOMS_MAX = 5;
 var CHECKIN_HOURS = ['12:00', '13:00', '14:00'];
 var CHECKOUT_HOURS = ['12:00', '13:00', '14:00'];
@@ -18,10 +38,10 @@ var PRICE_MIN = 1000;
 var PRICE_MAX = 1000000;
 var GUESTS_MAX = 1000;
 // Ограничения для пользовательского объявления
-var BUNGALO_MIN_PRICE = 0;
-var FLAT_MIN_PRICE = 1000;
-var HOUSE_MIN_PRICE = 5000;
-var PALACE_MIN_PRICE = 10000;
+// var BUNGALO_MIN_PRICE = 0;
+// var FLAT_MIN_PRICE = 1000;
+// var HOUSE_MIN_PRICE = 5000;
+// var PALACE_MIN_PRICE = 10000;
 var ROOM_NUMBER_NO_GUESTS = '100';
 // Элементы
 var MAP_ELEMENT = document.querySelector('.map');
@@ -106,7 +126,8 @@ var getCard = function (j) {
       title: arraysToShuffle.titlesShuffled[j],
       address: location.x + ', ' + location.y,
       price: getRandomInt(PRICE_MIN, (PRICE_MAX + 1)),
-      type: TYPES[getRandomInt(0, 4)],
+      // type: TYPES[getRandomInt(0, 4)],
+      type: Object.keys(PROPERTY_TYPES)[getRandomInt(0, 4)],
       rooms: getRandomInt(1, (ROOMS_MAX + 1)),
       guests: getRandomInt(1, (GUESTS_MAX + 1)),
       checkin: CHECKIN_HOURS[getRandomInt(0, CHECKIN_HOURS.length)],
@@ -172,7 +193,9 @@ var renderCard = function (card) {
   cardElement.querySelector('.popup__title').textContent = card.offer.title;
   cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
   cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = TYPES_EXPLAINED[card.offer.type];
+  cardElement.querySelector('.popup__type').textContent = PROPERTY_TYPES[card.offer.type].type;
+  // cardElement.querySelector('.popup__type').textContent = TYPES_EXPLAINED[card.offer.type];
+
   // Добавление числа комнат и гостей (склонение только для числа комнат  <= 20)
   if (card.offer.rooms === 1) {
     cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комната для ' + card.offer.guests + ' гостей';
@@ -278,11 +301,19 @@ var setDefaulfAddress = function () {
 
 // Валидация формы
 
+// var typeChangeHandler = function (evt) {
+//   var i = evt.target.value;
+//   i = i.toUpperCase() + '_MIN_PRICE';
+//   AD_FORM.querySelector('#price').min = window[i];
+//   AD_FORM.querySelector('#price').placeholder = window[i];
+// };
+
 var typeChangeHandler = function (evt) {
   var i = evt.target.value;
-  i = i.toUpperCase() + '_MIN_PRICE';
-  AD_FORM.querySelector('#price').min = window[i];
-  AD_FORM.querySelector('#price').placeholder = window[i];
+  i = PROPERTY_TYPES[i];
+
+  AD_FORM.querySelector('#price').min = i.minPrice;
+  AD_FORM.querySelector('#price').placeholder = i.minPrice;
 };
 
 AD_FORM.querySelector('select#type').addEventListener('change', function (evt) {

@@ -270,6 +270,90 @@ var setDefaulfAddress = function () {
   AD_FORM.querySelector('#address').value = x + ', ' + y;
 };
 
+// module4-task2
+var typeChangeHandler = function (evt) {
+  var i = evt.target.value;
+  i = i.toUpperCase() + '_MIN_PRICE';
+  AD_FORM.querySelector('#price').min = window[i];
+  AD_FORM.querySelector('#price').placeholder = window[i];
+};
+
+AD_FORM.querySelector('select#type').addEventListener('change', function (evt) {
+  typeChangeHandler(evt);
+});
+
+var roomNumberChangeHandler = function (evt) {
+  var roomNumber = evt.target.value;
+  for (var j = 0; j < AD_FORM.querySelector('#capacity').length; j++) {
+    var capacityOption = AD_FORM.querySelector('#capacity')[j];
+    if (roomNumber === ROOM_NUMBER_NO_GUESTS && capacityOption.value !== '0') {
+      capacityOption.disabled = true;
+    } else if (roomNumber === ROOM_NUMBER_NO_GUESTS && capacityOption.value === '0') {
+      capacityOption.disabled = false;
+    } else if (capacityOption.value > roomNumber || capacityOption.value === '0') {
+      capacityOption.disabled = true;
+    } else if (capacityOption.value <= roomNumber) {
+      capacityOption.disabled = false;
+    }
+  }
+  checkCapacityValidity();
+};
+
+var capacityChangeHandler = function () {
+  checkCapacityValidity();
+};
+
+var checkCapacityValidity = function () {
+  for (var i = 0; i < AD_FORM.querySelector('#capacity').length; i++) {
+    var j = AD_FORM.querySelector('#capacity')[i];
+    if (j.selected === true) {
+      if (j.disabled === true) {
+        AD_FORM.querySelector('#capacity').valid = false;
+        AD_FORM.querySelector('#capacity').setCustomValidity('Данное число мест не доступно при выбранном количестве комнат');
+      } else {
+        AD_FORM.querySelector('#capacity').valid = true;
+        AD_FORM.querySelector('#capacity').setCustomValidity('');
+      }
+    }
+  }
+};
+
+var timeinChangeHandler = function (evt) {
+  var sourceValue = evt.target.value;
+  var targetSelectOptions = '';
+  if (evt.target.id === 'timein') {
+    targetSelectOptions = AD_FORM.querySelectorAll('select#timeout option');
+  } else if (evt.target.id === 'timeout') {
+    targetSelectOptions = AD_FORM.querySelectorAll('select#timein option');
+  }
+
+  // Не смогла понять, можно ли просто сразу выбрать элемент-цель с value, соответствующим sourceValue, чтобы не делать этот цикл
+  targetSelectOptions.forEach(function (element) {
+    if (element.value === sourceValue) {
+      element.selected = true;
+    }
+  });
+};
+
+
+AD_FORM.querySelector('select#room_number').addEventListener('change', function (evt) {
+  roomNumberChangeHandler(evt);
+});
+
+AD_FORM.querySelector('select#capacity').addEventListener('change', function () {
+  capacityChangeHandler();
+});
+
+AD_FORM.querySelector('select#timein').addEventListener('change', function (evt) {
+  timeinChangeHandler(evt);
+});
+
+AD_FORM.querySelector('select#timeout').addEventListener('change', function (evt) {
+  timeinChangeHandler(evt);
+});
+
+//
+
 // Запуск всего
 
 disable(ALL_SELECTS);

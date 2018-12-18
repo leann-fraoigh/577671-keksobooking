@@ -17,6 +17,12 @@ var MAP_HEIGTH_MAX = 630;
 var PRICE_MIN = 1000;
 var PRICE_MAX = 1000000;
 var GUESTS_MAX = 1000;
+// Ограничения для пользовательского объявления
+var BUNGALO_MIN_PRICE = 0;
+var FLAT_MIN_PRICE = 1000;
+var HOUSE_MIN_PRICE = 5000;
+var PALACE_MIN_PRICE = 10000;
+var ROOM_NUMBER_NO_GUESTS = '100';
 // Элементы
 var MAP_ELEMENT = document.querySelector('.map');
 var MAP_PINS_ELEMENT = MAP_ELEMENT.querySelector('.map__pins');

@@ -276,7 +276,8 @@ var setDefaulfAddress = function () {
   AD_FORM.querySelector('#address').value = x + ', ' + y;
 };
 
-// module4-task2
+// Валидация формы
+
 var typeChangeHandler = function (evt) {
   var i = evt.target.value;
   i = i.toUpperCase() + '_MIN_PRICE';
@@ -341,6 +342,25 @@ var timeinChangeHandler = function (evt) {
   });
 };
 
+// Запуск всего
+
+disable(ALL_SELECTS);
+
+disable(ALL_INPUTS);
+
+
+var cardsData = getCards(arraysToShuffle, OBJECTS_AMOUNT);
+
+setDefaulfAddress();
+
+PIN_MAIN.addEventListener('mouseup', function () {
+  enable(ALL_SELECTS);
+  enable(ALL_INPUTS);
+  MAP_ELEMENT.classList.remove('map--faded');
+  AD_FORM.classList.remove('ad-form--disabled');
+  setAddress();
+  MAP_PINS_ELEMENT.appendChild(renderPins(cardsData));
+});
 
 AD_FORM.querySelector('select#room_number').addEventListener('change', function (evt) {
   roomNumberChangeHandler(evt);
@@ -358,33 +378,10 @@ AD_FORM.querySelector('select#timeout').addEventListener('change', function (evt
   timeinChangeHandler(evt);
 });
 
-//
-
-// Запуск всего
-
-disable(ALL_SELECTS);
-
-disable(ALL_INPUTS);
-
-var cardsData = getCards(arraysToShuffle, OBJECTS_AMOUNT);
-
-setDefaulfAddress();
-
-PIN_MAIN.addEventListener('mouseup', function () {
-  enable(ALL_SELECTS);
-  enable(ALL_INPUTS);
-  MAP_ELEMENT.classList.remove('map--faded');
-  AD_FORM.classList.remove('ad-form--disabled');
-  setAddress();
-  MAP_PINS_ELEMENT.appendChild(renderPins(cardsData));
-});
-
-
 MAP_ELEMENT.addEventListener('click', function (evt) {
   evt.preventDefault();
   pinClickHandler(evt);
 });
-
 
 MAP_ELEMENT.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {

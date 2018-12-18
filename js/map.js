@@ -1,5 +1,7 @@
 'use strict';
-
+// Клавиши
+var ENTER_KEYCODE = 13;
+var ESC_KEYCODE = 27;
 var OBJECTS_AMOUNT = 8;
 // Данные о жилье
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
@@ -19,6 +21,12 @@ var GUESTS_MAX = 1000;
 var MAP_ELEMENT = document.querySelector('.map');
 var MAP_PINS_ELEMENT = MAP_ELEMENT.querySelector('.map__pins');
 var MAP_FILTERS_ELEMENT = MAP_ELEMENT.querySelector('.map__filters-container');
+var AD_FORM = document.querySelector('.ad-form');
+var PIN_MAIN = document.querySelector('.map__pin--main');
+var PIN_MAIN_WIDTH = 66;
+var PIN_MAIN_HEIGTH = 88;
+var ALL_SELECTS = document.querySelectorAll('select');
+var ALL_INPUTS = document.querySelectorAll('input');
 // Шаблоны
 var PIN_TEMPLATE = document.querySelector('#pin')
 .content
@@ -28,19 +36,15 @@ var PIN_HEIGTH = 70;
 var CARD_TEMPLATE = document.querySelector('#card')
 .content
 .querySelector('.map__card');
+var popup;
+var popupClose;
 
 var arraysToShuffle = {
   titlesShuffled: TITLES.slice(),
   featuresShuffled: FEATURES.slice(),
-  photosShuffled: PHOTOS.slice()
 };
 
-// Все равно получается не универсально из-за класса map--faded внутри? Но тогда нужно просто делать функцию отключения класса, принимающую на вход элемент и класс?..
-var mapUnfade = function (elementToUnfade) {
-  elementToUnfade.classList.remove('map--faded');
-};
-
-// Создтание раномных чисел.
+// Создание раномных чисел.
 // [min, max) inclding min, excluding max
 var getRandomInt = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -58,15 +62,33 @@ var shuffle = function (arr) {
   }
 };
 
+// Выключалка и включалка полей форм
+var disable = function (arr) {
+  for (var i = 0; i < arr.length; i++) {
+    arr[i].disabled = true;
+  }
+};
+
+var enable = function (arr) {
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i].disabled === true) {
+      arr[i].disabled = false;
+    }
+  }
+};
+
 // Генерация одной карточки
-// Не уверена, что это нужно выделять в отдельную функцию
 var getCard = function (j) {
   var location = {
     x: getRandomInt(0, (MAP_ELEMENT.clientWidth + 1)),
     y: getRandomInt(MAP_HEIGTH_MIN, (MAP_HEIGTH_MAX + 1))
   };
 
+  var photos = PHOTOS.slice();
+  shuffle(photos);
+
   var ret = {
+    cardID: 'AD' + j,
     author: {
       avatar: 'img/avatars/user0' + (j + 1) + '.png'
     },
@@ -85,7 +107,7 @@ var getCard = function (j) {
       checkout: CHECKOUT_HOURS[getRandomInt(0, CHECKOUT_HOURS.length)],
       features: arraysToShuffle.featuresShuffled.slice(getRandomInt(0, 6)),
       description: '',
-      photos: arraysToShuffle.photosShuffled,
+      photos: photos,
     }
   };
 
@@ -123,6 +145,7 @@ var renderPins = function (sourceArr) {
     pinElement.style.top = card.location.y - PIN_HEIGTH + 'px';
     pinElement.firstElementChild.src = card.author.avatar;
     pinElement.firstElementChild.alt = card.offer.title;
+    pinElement.id = card.cardID;
     return pinElement;
   };
 
@@ -134,7 +157,7 @@ var renderPins = function (sourceArr) {
   return fragment;
 };
 
-// Создание элемента с карточкой
+// Отрисовка элемента с карточкой
 var renderCard = function (card) {
   var fragment = document.createDocumentFragment();
 
@@ -171,6 +194,7 @@ var renderCard = function (card) {
   // Конец добавления иконок удобств
 
   cardElement.querySelector('.popup__description').textContent = card.offer.description;
+
   // Вставка фото
   cardElement.querySelector('.popup__photo').src = card.offer.photos[0];
   if (card.offer.photos.length > 1) {
@@ -187,14 +211,94 @@ var renderCard = function (card) {
   return fragment;
 };
 
-// Генерирует массив случайных объектов
+// Удаление карточки
+
+var removeCard = function () {
+  if (popup) {
+    MAP_ELEMENT.removeChild(popup);
+    popup = undefined;
+  }
+};
+
+// Закрытие карточки
+
+var popupCloseClickHandler = function (evt) {
+  evt.preventDefault();
+  removeCard();
+};
+
+var popupKeydownHandler = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    evt.preventDefault();
+    removeCard();
+  }
+};
+
+var popupCloseKeydownHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    evt.preventDefault();
+    removeCard();
+  }
+};
+
+// Обработчик нажатия на пин
+
+var pinClickHandler = function (evt) {
+  var target = evt.target;
+  var targetButton = target.closest('button');
+  if (targetButton && targetButton.classList.contains('map__pin') && !targetButton.classList.contains('map__pin--main')) {
+    removeCard();
+    var i = targetButton.id.substring(2);
+    MAP_ELEMENT.insertBefore(renderCard(cardsData[i]), MAP_FILTERS_ELEMENT);
+    popup = MAP_ELEMENT.querySelector('.map__card.popup');
+    popupClose = popup.querySelector('.popup__close');
+    popupClose.addEventListener('click', popupCloseClickHandler);
+    popupClose.addEventListener('keydown', popupCloseKeydownHandler);
+    document.addEventListener('keydown', popupKeydownHandler);
+  }
+};
+
+var setAddress = function () {
+  var y = PIN_MAIN.offsetTop + PIN_MAIN_HEIGTH;
+  var x = PIN_MAIN.offsetLeft + PIN_MAIN_WIDTH / 2;
+  AD_FORM.querySelector('#address').value = x + ', ' + y;
+};
+
+var setDefaulfAddress = function () {
+  var y = PIN_MAIN.offsetTop + PIN_MAIN_WIDTH / 2;
+  var x = PIN_MAIN.offsetLeft + PIN_MAIN_WIDTH / 2;
+  AD_FORM.querySelector('#address').value = x + ', ' + y;
+};
+
+// Запуск всего
+
+disable(ALL_SELECTS);
+
+disable(ALL_INPUTS);
+
 var cardsData = getCards(arraysToShuffle, OBJECTS_AMOUNT);
 
-// Запускает создание и запись меток
-MAP_PINS_ELEMENT.appendChild(renderPins(cardsData));
+setDefaulfAddress();
 
-// Запускает создание и запись карточки
-MAP_ELEMENT.insertBefore(renderCard(cardsData[0]), MAP_FILTERS_ELEMENT);
+PIN_MAIN.addEventListener('mouseup', function () {
+  enable(ALL_SELECTS);
+  enable(ALL_INPUTS);
+  MAP_ELEMENT.classList.remove('map--faded');
+  AD_FORM.classList.remove('ad-form--disabled');
+  setAddress();
+  MAP_PINS_ELEMENT.appendChild(renderPins(cardsData));
+});
 
-// Показывает карту
-mapUnfade(MAP_ELEMENT);
+
+MAP_ELEMENT.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  pinClickHandler(evt);
+});
+
+
+MAP_ELEMENT.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    evt.preventDefault();
+    pinClickHandler(evt);
+  }
+});

@@ -383,7 +383,7 @@ var enablePage = function () {
   enable(ALL_INPUTS);
   MAP_ELEMENT.classList.remove('map--faded');
   AD_FORM.classList.remove('ad-form--disabled');
-}
+};
 
 var pinMainMouseDownHandler = function (evt) {
   enablePage();
@@ -451,7 +451,7 @@ setDefaulfAddress();
 
 PIN_MAIN.addEventListener('mousedown', function (evt) {
   pinMainMouseDownHandler(evt);
-  document.addEventListener('mousemove', pinMainMouseMoveHandler); /*или это логичнее внутрь pinMainMouseDownHandler положить? */
+  document.addEventListener('mousemove', pinMainMouseMoveHandler); /* Или это логичнее внутрь pinMainMouseDownHandler положить? */
   document.addEventListener('mouseup', pinMainMouseUpHandler);
 });
 

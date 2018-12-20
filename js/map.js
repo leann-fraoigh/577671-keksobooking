@@ -24,9 +24,6 @@ var PROPERTY_TYPES = {
     minPrice: 0,
   }
 };
-
-// var TYPES = ['palace', 'flat', 'house', 'bungalo'];
-// var TYPES_EXPLAINED = {'palace': 'Дворец', 'flat': 'Квартира', 'house': 'Дом', 'bungalo': 'Бунгало'};
 var ROOMS_MAX = 5;
 var CHECKIN_HOURS = ['12:00', '13:00', '14:00'];
 var CHECKOUT_HOURS = ['12:00', '13:00', '14:00'];
@@ -37,11 +34,6 @@ var MAP_HEIGTH_MAX = 630;
 var PRICE_MIN = 1000;
 var PRICE_MAX = 1000000;
 var GUESTS_MAX = 1000;
-// Ограничения для пользовательского объявления
-// var BUNGALO_MIN_PRICE = 0;
-// var FLAT_MIN_PRICE = 1000;
-// var HOUSE_MIN_PRICE = 5000;
-// var PALACE_MIN_PRICE = 10000;
 var ROOM_NUMBER_NO_GUESTS = '100';
 // Элементы
 var MAP_ELEMENT = document.querySelector('.map');
@@ -194,7 +186,6 @@ var renderCard = function (card) {
   cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
   cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
   cardElement.querySelector('.popup__type').textContent = PROPERTY_TYPES[card.offer.type].type;
-  // cardElement.querySelector('.popup__type').textContent = TYPES_EXPLAINED[card.offer.type];
 
   // Добавление числа комнат и гостей (склонение только для числа комнат  <= 20)
   if (card.offer.rooms === 1) {
@@ -300,14 +291,6 @@ var setDefaulfAddress = function () {
 };
 
 // Валидация формы
-
-// var typeChangeHandler = function (evt) {
-//   var i = evt.target.value;
-//   i = i.toUpperCase() + '_MIN_PRICE';
-//   AD_FORM.querySelector('#price').min = window[i];
-//   AD_FORM.querySelector('#price').placeholder = window[i];
-// };
-
 var typeChangeHandler = function (evt) {
   var i = evt.target.value;
   i = PROPERTY_TYPES[i];
@@ -365,7 +348,6 @@ var timeinChangeHandler = function (evt) {
     targetSelectOptions = AD_FORM.querySelectorAll('select#timein option');
   }
 
-  // Не смогла понять, можно ли просто сразу выбрать элемент-цель с value, соответствующим sourceValue, чтобы не делать этот цикл
   targetSelectOptions.forEach(function (element) {
     if (element.value === sourceValue) {
       element.selected = true;

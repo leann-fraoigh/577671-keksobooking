@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  // Тут повторяются переменные, но так как этот модуль все равно удалять, я на это закрыла глаза.
   // Элементы
   var MAP_ELEMENT = document.querySelector('.map');
   var MAP_HEIGTH_MIN = 130;

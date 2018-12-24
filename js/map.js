@@ -8,7 +8,6 @@
   var MAP_ELEMENT = document.querySelector('.map');
   var MAP_PINS_ELEMENT = MAP_ELEMENT.querySelector('.map__pins');
   var MAP_FILTERS_ELEMENT = MAP_ELEMENT.querySelector('.map__filters-container');
-  var AD_FORM = document.querySelector('.ad-form');
   var PIN_MAIN = document.querySelector('.map__pin--main');
   var PIN_MAIN_WIDTH = 66;
   var PIN_MAIN_HEIGTH = 88;
@@ -39,7 +38,7 @@
     enable(ALL_SELECTS);
     enable(ALL_INPUTS);
     MAP_ELEMENT.classList.remove('map--faded');
-    AD_FORM.classList.remove('ad-form--disabled');
+    window.form.adFormElement.classList.remove('ad-form--disabled');
   };
 
 

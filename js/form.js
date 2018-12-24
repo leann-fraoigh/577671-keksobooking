@@ -115,6 +115,7 @@
   window.form = {
     setAddress: setAddress,
     setDefaultAddress: setDefaulfAddress,
+    adFormElement: AD_FORM,
   };
 
 })();

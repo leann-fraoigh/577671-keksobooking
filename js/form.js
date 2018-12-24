@@ -106,7 +106,7 @@
   });
 
   var setAddress = function (x, y) {
-    //Вариант кода, если данные берутся в этом модуле, а не передаются как аргументы при вызове из map
+    // Вариант кода, если данные берутся в этом модуле, а не передаются как аргументы при вызове из map
     // var x = PIN_MAIN.offsetLeft + PIN_MAIN_WIDTH / 2;
     // var y = PIN_MAIN.offsetTop + PIN_MAIN_HEIGTH;
     AD_FORM.querySelector('#address').value = x + ', ' + y;

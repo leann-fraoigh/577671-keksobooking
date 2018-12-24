@@ -89,21 +89,13 @@
   };
 
 
-  AD_FORM.querySelector('select#room_number').addEventListener('change', function (evt) {
-    roomNumberChangeHandler(evt);
-  });
+  AD_FORM.querySelector('select#room_number').addEventListener('change', roomNumberChangeHandler);
 
-  AD_FORM.querySelector('select#capacity').addEventListener('change', function () {
-    capacityChangeHandler();
-  });
+  AD_FORM.querySelector('select#capacity').addEventListener('change', capacityChangeHandler);
 
-  AD_FORM.querySelector('select#timein').addEventListener('change', function (evt) {
-    timeinChangeHandler(evt);
-  });
+  AD_FORM.querySelector('select#timein').addEventListener('change', timeinChangeHandler);
 
-  AD_FORM.querySelector('select#timeout').addEventListener('change', function (evt) {
-    timeinChangeHandler(evt);
-  });
+  AD_FORM.querySelector('select#timeout').addEventListener('change', timeinChangeHandler);
 
   var setAddress = function (x, y) {
     // Вариант кода, если данные берутся в этом модуле, а не передаются как аргументы при вызове из map

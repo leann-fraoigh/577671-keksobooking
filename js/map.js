@@ -14,11 +14,6 @@
   var ALL_SELECTS = document.querySelectorAll('select');
   var ALL_INPUTS = document.querySelectorAll('input');
 
-  // Шаблоны
-
-  var popup;
-  var popupClose;
-
   // Выключалка и включалка полей форм
   var disable = function (arr) {
     for (var i = 0; i < arr.length; i++) {
@@ -42,49 +37,15 @@
   };
 
 
-  // Обработчик закрывающих действий на карточке
-
-  var removeCard = function () {
-    if (popup) {
-      MAP_ELEMENT.removeChild(popup);
-      popup = undefined;
-    }
-  };
-
-  var popupCloseClickHandler = function (evt) {
-    evt.preventDefault();
-    removeCard();
-  };
-
-  var popupKeydownHandler = function (evt) {
-    if (evt.keyCode === window.keyCode.ESC) {
-      evt.preventDefault();
-      removeCard();
-    }
-  };
-
-  var popupCloseKeydownHandler = function (evt) {
-    if (evt.keyCode === window.keyCode.ENTER) {
-      evt.preventDefault();
-      removeCard();
-    }
-  };
-
   // Обработчик нажатия на пин
 
   var pinClickHandler = function (evt) {
     var target = evt.target;
     var targetButton = target.closest('button');
     if (targetButton && targetButton.classList.contains('map__pin') && !targetButton.classList.contains('map__pin--main')) {
-      removeCard();
+      window.card.removeCard();
       var i = targetButton.id.substring(2);
       MAP_ELEMENT.insertBefore(window.card.renderCard(window.data[i]), MAP_FILTERS_ELEMENT);
-      popup = MAP_ELEMENT.querySelector('.map__card.popup');
-      popup.style.zIndex = 2000;
-      popupClose = popup.querySelector('.popup__close');
-      popupClose.addEventListener('click', popupCloseClickHandler);
-      popupClose.addEventListener('keydown', popupCloseKeydownHandler);
-      document.addEventListener('keydown', popupKeydownHandler);
     }
   };
 
@@ -105,7 +66,7 @@
 
   var pinMainMouseMoveHandler = function (moveEvt) {
     moveEvt.preventDefault();
-    removeCard();
+    window.card.removeCard();
 
     var shift = {
       x: startCoords.x - moveEvt.clientX,

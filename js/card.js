@@ -20,11 +20,44 @@
     }
   };
 
+  // Шаблоны
+  var cardElement;
+  var cardClose;
+
+  // Удаление карточки
+
+  var removeCard = function () {
+
+    if (cardElement) {
+      cardElement.remove();
+      cardElement = undefined;
+    }
+  };
+
+  var cardCloseClickHandler = function (evt) {
+    evt.preventDefault();
+    removeCard();
+  };
+
+  var cardKeydownHandler = function (evt) {
+    if (evt.keyCode === window.keyCode.ESC) {
+      evt.preventDefault();
+      removeCard();
+    }
+  };
+
+  var cardCloseKeydownHandler = function (evt) {
+    if (evt.keyCode === window.keyCode.ENTER) {
+      evt.preventDefault();
+      removeCard();
+    }
+  };
+
   // Отрисовка элемента с карточкой
   var renderCard = function (card) {
     var fragment = document.createDocumentFragment();
 
-    var cardElement = CARD_TEMPLATE.cloneNode(true);
+    cardElement = CARD_TEMPLATE.cloneNode(true);
     cardElement.querySelector('.popup__avatar').src = card.author.avatar;
     cardElement.querySelector('.popup__title').textContent = card.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
@@ -69,11 +102,20 @@
       }
     }
 
+    cardElement.style.zIndex = 2000;
+    cardClose = cardElement.querySelector('.popup__close');
+
     fragment.appendChild(cardElement);
+
+    cardClose.addEventListener('click', cardCloseClickHandler);
+    cardClose.addEventListener('keydown', cardCloseKeydownHandler);
+    document.addEventListener('keydown', cardKeydownHandler);
+
     return fragment;
   };
 
   window.card = {
     renderCard: renderCard,
+    removeCard: removeCard,
   };
 })();

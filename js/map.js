@@ -39,14 +39,30 @@
 
   // Обработчик нажатия на пин
 
-  var pinClickHandler = function (evt) {
+  var createCard = function (pin) {
+    window.card.removeCard();
+    var i = pin.id.substring(2);
+    MAP_ELEMENT.insertBefore(window.card.renderCard(window.data[i]), MAP_FILTERS_ELEMENT);
+  };
+
+  var checkIfPin = function (evt) {
     var target = evt.target;
     var targetButton = target.closest('button');
     if (targetButton && targetButton.classList.contains('map__pin') && !targetButton.classList.contains('map__pin--main')) {
-      window.card.removeCard();
-      var i = targetButton.id.substring(2);
-      MAP_ELEMENT.insertBefore(window.card.renderCard(window.data[i]), MAP_FILTERS_ELEMENT);
+      return true;
+    } else {
+      return false;
     }
+  };
+
+  var pinClickHandler = function (evt) {
+    evt.preventDefault();
+    createCard(evt.target.closest('button'));
+  };
+
+  var pinKeydownHandler = function (evt) {
+    evt.preventDefault();
+    createCard(evt.target.closest('button'));
   };
 
   var startCoords = {
@@ -56,6 +72,9 @@
 
 
   var pinMainMouseDownHandler = function (evt) {
+    document.addEventListener('mousemove', pinMainMouseMoveHandler);
+    document.addEventListener('mouseup', pinMainMouseUpHandler);
+
     enablePage();
 
     startCoords.x = evt.clientX;
@@ -133,21 +152,19 @@
 
   disable(ALL_INPUTS);
 
-  PIN_MAIN.addEventListener('mousedown', function (evt) {
-    pinMainMouseDownHandler(evt);
-    document.addEventListener('mousemove', pinMainMouseMoveHandler); /* Или это логичнее внутрь pinMainMouseDownHandler положить? */
-    document.addEventListener('mouseup', pinMainMouseUpHandler);
-  });
+  PIN_MAIN.addEventListener('mousedown', pinMainMouseDownHandler);
 
   MAP_ELEMENT.addEventListener('click', function (evt) {
-    evt.preventDefault();
-    pinClickHandler(evt);
+    if (checkIfPin(evt)) {
+      pinClickHandler(evt);
+    }
   });
 
   MAP_ELEMENT.addEventListener('keydown', function (evt) {
     if (evt.keyCode === window.keyCode.ENTER) {
-      evt.preventDefault();
-      pinClickHandler(evt);
+      if (checkIfPin(evt)) {
+        pinKeydownHandler(evt);
+      }
     }
   });
 })();

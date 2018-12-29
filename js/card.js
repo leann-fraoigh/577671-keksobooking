@@ -30,6 +30,8 @@
 
     if (cardElement) {
       cardElement.remove();
+      // debugger;
+      // document.removeChild(cardElement);
       cardElement = undefined;
     }
   };

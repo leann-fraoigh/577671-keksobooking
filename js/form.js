@@ -32,9 +32,7 @@
     AD_FORM.querySelector('#price').placeholder = i.minPrice;
   };
 
-  AD_FORM.querySelector('select#type').addEventListener('change', function (evt) {
-    typeChangeHandler(evt);
-  });
+  AD_FORM.querySelector('select#type').addEventListener('change', typeChangeHandler);
 
   var roomNumberChangeHandler = function (evt) {
     var roomNumber = evt.target.value;

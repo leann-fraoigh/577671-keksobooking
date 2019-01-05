@@ -1,8 +1,8 @@
 'use strict';
 (function () {
   var MAP_HEIGTH_MIN = 130;
-  var MAP_HEIGTH_MAX = 630;
-
+  // var MAP_HEIGTH_MAX = 630;
+  var MAP_HEIGTH_MAX = 704;
 
   // Элементы
   var MAP_ELEMENT = document.querySelector('.map');
@@ -10,39 +10,22 @@
   var MAP_FILTERS_ELEMENT = MAP_ELEMENT.querySelector('.map__filters-container');
   var PIN_MAIN = document.querySelector('.map__pin--main');
   var PIN_MAIN_WIDTH = 66;
-  var PIN_MAIN_HEIGTH = 88;
-  var ALL_SELECTS = document.querySelectorAll('select');
-  var ALL_INPUTS = document.querySelectorAll('input');
+  var PIN_MAIN_HEIGTH = 80;
+  var CARD_TEMPLATE = document.querySelector('#card').content.querySelector('.map__card');
 
-  // Выключалка и включалка полей форм
-  var disable = function (arr) {
-    for (var i = 0; i < arr.length; i++) {
-      arr[i].disabled = true;
-    }
-  };
-
-  var enable = function (arr) {
-    for (var i = 0; i < arr.length; i++) {
-      if (arr[i].disabled === true) {
-        arr[i].disabled = false;
-      }
-    }
-  };
+  // Активация страницы
 
   var enablePage = function () {
-    enable(ALL_SELECTS);
-    enable(ALL_INPUTS);
+    window.form.activateForm();
     MAP_ELEMENT.classList.remove('map--faded');
-    window.form.adFormElement.classList.remove('ad-form--disabled');
   };
-
 
   // Обработчик нажатия на пин
 
   var createCard = function (pin) {
     window.card.removeCard();
     var i = pin.id.substring(2);
-    MAP_ELEMENT.insertBefore(window.card.renderCard(window.data[i]), MAP_FILTERS_ELEMENT);
+    MAP_ELEMENT.insertBefore(window.card.renderCard(window.data.cardsData[i], CARD_TEMPLATE), MAP_FILTERS_ELEMENT);
   };
 
   var checkIfPin = function (evt) {
@@ -103,8 +86,8 @@
 
     if (newTop <= (MAP_HEIGTH_MIN)) {
       PIN_MAIN.style.top = MAP_HEIGTH_MIN + 'px';
-    } else if (newTop >= MAP_HEIGTH_MAX) {
-      PIN_MAIN.style.top = MAP_HEIGTH_MAX + 'px';
+    } else if (newTop >= MAP_HEIGTH_MAX - PIN_MAIN_HEIGTH) {
+      PIN_MAIN.style.top = MAP_HEIGTH_MAX - PIN_MAIN_HEIGTH + 'px';
     } else {
       PIN_MAIN.style.top = newTop + 'px';
     }
@@ -124,7 +107,7 @@
     document.removeEventListener('mousemove', pinMainMouseMoveHandler);
     document.removeEventListener('mouseup', pinMainMouseUpHandler);
     window.form.setAddress(getAddress().x, getAddress().y);
-    MAP_PINS_ELEMENT.appendChild(window.pin.renderPins(window.data));
+    MAP_PINS_ELEMENT.appendChild(window.pin.renderPins(window.data.cardsData));
   };
 
   // Получить адрес. Вспомогательные функции, чтобы вызывать установку адреса в форму отсюда, т.к. тут сейчас лежат данные, в зависимости от котороых он вычисляется.
@@ -148,9 +131,7 @@
 
   window.form.setDefaultAddress(getDefaultAddress().x, getDefaultAddress().y);
 
-  disable(ALL_SELECTS);
-
-  disable(ALL_INPUTS);
+  // window.form.deactivateForm();
 
   PIN_MAIN.addEventListener('mousedown', pinMainMouseDownHandler);
 

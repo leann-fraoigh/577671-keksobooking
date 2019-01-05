@@ -61,6 +61,17 @@
     featuresShuffled: FEATURES.slice(),
   };
 
+  // Получить минимальную цену жилья
+  var getMinprice = function (type) {
+    var price = PROPERTY_TYPES[type].minPrice;
+    return price;
+  };
+
+  var getTitle = function (type) {
+    var title = PROPERTY_TYPES[type].title;
+    return title;
+  };
+
   // Генерация одной карточки
   var getCard = function (j) {
     var location = {
@@ -99,7 +110,7 @@
   };
 
   // Генерация списка карточек
-  var getCards = function (toShuffle, cardsAmount) {
+  var generateCards = function (toShuffle, cardsAmount) {
 
     for (var key in toShuffle) {
       if (toShuffle.hasOwnProperty(key)) {
@@ -117,8 +128,14 @@
     return cards;
   };
 
-  var cardsData = getCards(arraysToShuffle, OBJECTS_AMOUNT);
+  var cardsData = generateCards(arraysToShuffle, OBJECTS_AMOUNT);
 
-  window.data = cardsData;
+  // window.data = cardsData;
+
+  window.data = {
+    cardsData: cardsData,
+    getMinprice: getMinprice,
+    getTitle: getTitle,
+  };
 })();
 

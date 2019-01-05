@@ -22,7 +22,7 @@
     };
 
     // Запись всех пинов
-    for (var i = 0; i < window.data.length; i++) {
+    for (var i = 0; i < window.data.cardsData.length; i++) {
       fragment.appendChild(renderPin(sourceArr[i]));
     }
 

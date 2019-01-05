@@ -1,35 +1,46 @@
 'use strict';
 (function () {
   var AD_FORM = document.querySelector('.ad-form');
-  var PROPERTY_TYPES = {
-    palace: {
-      type: 'Дворец',
-      minPrice: 10000,
-    },
-    flat: {
-      type: 'Квартира',
-      minPrice: 1000,
-    },
-    house: {
-      type: 'Дом',
-      minPrice: 5000,
-    },
-    bungalo: {
-      type: 'Бунгало',
-      minPrice: 0,
-    }
-  };
+  var ALL_SELECTS = document.querySelectorAll('select');
+  var ALL_INPUTS = document.querySelectorAll('input');
 
   // Ограничения для формы
   var ROOM_NUMBER_NO_GUESTS = '100';
 
+  // Активация и деактивация отдельных элементов и формы в целом
+  var disableElements = function (arr) {
+    for (var i = 0; i < arr.length; i++) {
+      arr[i].disabled = true;
+    }
+  };
+
+  var enableElements = function (arr) {
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i].disabled === true) {
+        arr[i].disabled = false;
+      }
+    }
+  };
+
+  var activateForm = function () {
+    enableElements(ALL_INPUTS);
+    enableElements(ALL_SELECTS);
+    AD_FORM.classList.remove('ad-form--disabled');
+
+  };
+
+  var deactivateForm = function () {
+    disableElements(ALL_INPUTS);
+    disableElements(ALL_SELECTS);
+  };
+
+  deactivateForm();
+
   // Валидация формы
   var typeChangeHandler = function (evt) {
-    var i = evt.target.value;
-    i = PROPERTY_TYPES[i];
-
-    AD_FORM.querySelector('#price').min = i.minPrice;
-    AD_FORM.querySelector('#price').placeholder = i.minPrice;
+    var price = window.data.getMinprice(evt.target.value);
+    AD_FORM.querySelector('#price').min = price;
+    AD_FORM.querySelector('#price').placeholder = price;
   };
 
   AD_FORM.querySelector('select#type').addEventListener('change', typeChangeHandler);
@@ -86,7 +97,6 @@
     });
   };
 
-
   AD_FORM.querySelector('select#room_number').addEventListener('change', roomNumberChangeHandler);
 
   AD_FORM.querySelector('select#capacity').addEventListener('change', capacityChangeHandler);
@@ -96,24 +106,18 @@
   AD_FORM.querySelector('select#timeout').addEventListener('change', timeinChangeHandler);
 
   var setAddress = function (x, y) {
-    // Вариант кода, если данные берутся в этом модуле, а не передаются как аргументы при вызове из map
-    // var x = PIN_MAIN.offsetLeft + PIN_MAIN_WIDTH / 2;
-    // var y = PIN_MAIN.offsetTop + PIN_MAIN_HEIGTH;
     AD_FORM.querySelector('#address').value = x + ', ' + y;
   };
 
   var setDefaulfAddress = function (x, y) {
-    // var x = PIN_MAIN.offsetLeft + PIN_MAIN_WIDTH / 2;
-    // var y = PIN_MAIN.offsetTop + PIN_MAIN_WIDTH / 2;
     AD_FORM.querySelector('#address').value = x + ', ' + y;
   };
-
-  // setDefaulfAddress();
 
   window.form = {
     setAddress: setAddress,
     setDefaultAddress: setDefaulfAddress,
-    adFormElement: AD_FORM,
+    activateForm: activateForm,
+    deactivateForm: deactivateForm,
   };
 
 })();

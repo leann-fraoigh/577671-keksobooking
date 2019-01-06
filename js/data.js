@@ -38,7 +38,7 @@
   var PRICE_MAX = 1000000;
   var GUESTS_MAX = 1000;
 
-  // Создание раномных чисел.
+  // Генерация раномных чисел.
   // [min, max) inclding min, excluding max
   var getRandomInt = function (min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -61,18 +61,19 @@
     featuresShuffled: FEATURES.slice(),
   };
 
-  // Получить минимальную цену жилья
+  // Получить минимальную цену для типа жилья
   var getMinprice = function (type) {
     var price = PROPERTY_TYPES[type].minPrice;
     return price;
   };
 
+  // Получить название типа жилья по-русски
   var getTitle = function (type) {
     var title = PROPERTY_TYPES[type].title;
     return title;
   };
 
-  // Генерация одной карточки
+  // Генерация данных одной карточки
   var getCard = function (j) {
     var location = {
       x: getRandomInt(0, (MAP_ELEMENT.clientWidth + 1)),
@@ -109,7 +110,7 @@
     return ret;
   };
 
-  // Генерация списка карточек
+  // Генерация массива данных для ккарточек
   var generateCards = function (toShuffle, cardsAmount) {
 
     for (var key in toShuffle) {
@@ -130,7 +131,6 @@
 
   var cardsData = generateCards(arraysToShuffle, OBJECTS_AMOUNT);
 
-  // window.data = cardsData;
 
   window.data = {
     cardsData: cardsData,

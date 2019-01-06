@@ -1,36 +1,20 @@
 'use strict';
 
 (function () {
-  var PIN_TEMPLATE = document.querySelector('#pin').content.querySelector('.map__pin');
-  var PIN_WIDTH = 50;
-  var PIN_HEIGTH = 70;
+  // Отрисовка одного пина. Data -- новые данные для этого пина. Pin -- объект с характеристиками стандартного пина.
+  var renderPin = function (data, pin) {
 
-  // Создание элемента со всеми пинами
-  var renderPins = function (sourceArr) {
-    var fragment = document.createDocumentFragment();
-
-    // Отрисовка одного пина
-    var renderPin = function (card) {
-
-      var pinElement = PIN_TEMPLATE.cloneNode(true);
-      pinElement.style.left = card.location.x - PIN_WIDTH / 2 + 'px';
-      pinElement.style.top = card.location.y - PIN_HEIGTH + 'px';
-      pinElement.firstElementChild.src = card.author.avatar;
-      pinElement.firstElementChild.alt = card.offer.title;
-      pinElement.id = card.cardID;
-      return pinElement;
-    };
-
-    // Запись всех пинов
-    for (var i = 0; i < window.data.cardsData.length; i++) {
-      fragment.appendChild(renderPin(sourceArr[i]));
-    }
-
-    return fragment;
+    var pinElement = pin.PIN_TEMPLATE.cloneNode(true);
+    pinElement.style.left = data.location.x - pin.PIN_WIDTH / 2 + 'px';
+    pinElement.style.top = data.location.y - pin.PIN_HEIGTH + 'px';
+    pinElement.firstElementChild.src = data.author.avatar;
+    pinElement.firstElementChild.alt = data.offer.title;
+    pinElement.id = data.cardID;
+    return pinElement;
   };
 
   window.pin = {
-    renderPins: renderPins,
+    renderPin: renderPin,
   };
 })();
 

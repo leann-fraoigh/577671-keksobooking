@@ -12,6 +12,14 @@
   var PIN_MAIN_WIDTH = 66;
   var PIN_MAIN_HEIGTH = 80;
   var CARD_TEMPLATE = document.querySelector('#card').content.querySelector('.map__card');
+  // var PIN_TEMPLATE = document.querySelector('#pin').content.querySelector('.map__pin');
+  var PIN = {
+    PIN_TEMPLATE: document.querySelector('#pin').content.querySelector('.map__pin'),
+    PIN_WIDTH: 50,
+    PIN_HEIGTH: 70,
+  };
+  // var PIN_WIDTH = 50;
+  // var PIN_HEIGTH = 70;
 
   // Активация страницы
 
@@ -107,7 +115,7 @@
     document.removeEventListener('mousemove', pinMainMouseMoveHandler);
     document.removeEventListener('mouseup', pinMainMouseUpHandler);
     window.form.setAddress(getAddress().x, getAddress().y);
-    MAP_PINS_ELEMENT.appendChild(window.pin.renderPins(window.data.cardsData));
+    MAP_PINS_ELEMENT.appendChild(renderPins(window.data.cardsData));
   };
 
   // Получить адрес. Вспомогательные функции, чтобы вызывать установку адреса в форму отсюда, т.к. тут сейчас лежат данные, в зависимости от котороых он вычисляется.
@@ -127,11 +135,19 @@
     return defaultAddress;
   };
 
+  // Отрисовка пинов
+  // Создание элемента со всеми пинами
+  var renderPins = function (sourceArr) {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < window.data.cardsData.length; i++) {
+      fragment.appendChild(window.pin.renderPin(sourceArr[i], PIN));
+    }
+    return fragment;
+  };
+
   // Запуск всего
 
   window.form.setDefaultAddress(getDefaultAddress().x, getDefaultAddress().y);
-
-  // window.form.deactivateForm();
 
   PIN_MAIN.addEventListener('mousedown', pinMainMouseDownHandler);
 

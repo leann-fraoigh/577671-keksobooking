@@ -119,11 +119,12 @@
 
   var loadHandler = function () {
     AD_FORM.reset();
+    window.messages.renderSuccessMessage();
   };
 
   AD_FORM.addEventListener('submit', function (evt) {
-    window.backend.upload(new FormData(AD_FORM), loadHandler, errorHandler);
     evt.preventDefault();
+    window.backend.upload(new FormData(AD_FORM), loadHandler, errorHandler);
   });
 
   window.form = {

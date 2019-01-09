@@ -3,6 +3,8 @@
 (function () {
   var ERROR_MESSAGE_TEMPLATE = document.querySelector('#error').content.querySelector('.error');
   var ERROR_MESSAGE_ZINDEX = 1500;
+  var SUCCESS_MESSAGE_TEMPLATE = document.querySelector('#success').content.querySelector('.success');
+  var SUCCESS_MESSAGE_ZINDEX = 1500;
 
 
   var renderErrorMessage = function (message) {
@@ -23,8 +25,24 @@
     });
   };
 
+  var renderSuccessMessage = function () {
+    var node = SUCCESS_MESSAGE_TEMPLATE.cloneNode(true);
+    document.querySelector('main').appendChild(node);
+    var successElement = document.querySelector('main .success');
+    successElement.style.zIndex = SUCCESS_MESSAGE_ZINDEX;
+    // Добавление обработчиков, закрывающийх объявление
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === window.keyCode.ESC) {
+        successElement.remove();
+      }
+    });
+    document.addEventListener('click', function () {
+      successElement.remove();
+    });
+  };
+
   window.messages = {
     renderErrorMessage: renderErrorMessage,
-    // showSuccessMessage: showSuccessMessage,
+    renderSuccessMessage: renderSuccessMessage,
   };
 })();

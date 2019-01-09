@@ -113,6 +113,19 @@
     AD_FORM.querySelector('#address').value = x + ', ' + y;
   };
 
+  var errorHandler = function (errorMessage) {
+    window.messages.renderErrorMessage(errorMessage);
+  };
+
+  var loadHandler = function () {
+    AD_FORM.reset();
+  };
+
+  AD_FORM.addEventListener('submit', function (evt) {
+    window.backend.upload(new FormData(AD_FORM), loadHandler, errorHandler);
+    evt.preventDefault();
+  });
+
   window.form = {
     setAddress: setAddress,
     setDefaultAddress: setDefaulfAddress,

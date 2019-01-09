@@ -1,7 +1,6 @@
 'use strict';
 (function () {
   var MAP_HEIGTH_MIN = 130;
-  // var MAP_HEIGTH_MAX = 630;
   var MAP_HEIGTH_MAX = 704;
 
   // Элементы
@@ -11,17 +10,24 @@
   var PIN_MAIN = document.querySelector('.map__pin--main');
   var PIN_MAIN_WIDTH = 66;
   var PIN_MAIN_HEIGTH = 80;
+  var PIN_MAIN_ZINDEX = 1000;
   var CARD_TEMPLATE = document.querySelector('#card').content.querySelector('.map__card');
   var PIN = {
     PIN_TEMPLATE: document.querySelector('#pin').content.querySelector('.map__pin'),
     PIN_WIDTH: 50,
     PIN_HEIGTH: 70,
   };
+  var PINS_AMOUNT = 5;
 
   // Активация страницы
   var enablePage = function () {
     window.form.activateForm();
     MAP_ELEMENT.classList.remove('map--faded');
+  };
+
+  // Коллбэк ошибки загурзки
+  var errorHandler = function (errorMessage) {
+    window.messages.renderErrorMessage(errorMessage);
   };
 
   // Удаление карточки
@@ -45,17 +51,23 @@
   };
 
   // Создание элемента карточки
-  var createCard = function (card, template) {
+  var createCard = function (card) {
     var fragment = document.createDocumentFragment();
-    fragment.appendChild(window.card.renderCard(card, template));
+    fragment.appendChild(window.card.renderCard(card, CARD_TEMPLATE));
     return fragment;
+  };
+
+  // Коллбэк загрузки карточки
+  var cardLoadHandler = function (data) {
+    MAP_ELEMENT.insertBefore(createCard(data[i]), MAP_FILTERS_ELEMENT);
   };
 
   // Отрисовка новой карточки
   var showRelatedCard = function (pin) {
     removeCard();
-    var i = pin.id.substring(2);
-    MAP_ELEMENT.insertBefore(createCard(window.data.cardsData[i], CARD_TEMPLATE), MAP_FILTERS_ELEMENT);
+    var i = pin.id;
+    window.backend.load(cardLoadHandler, errorHandler);
+    // MAP_ELEMENT.insertBefore(createCard(window.data.cardsData[i]), MAP_FILTERS_ELEMENT);
     // Добавление обработчиков событий на кнопку закрытия
     var cardClose = document.querySelector('.popup__close');
     cardClose.addEventListener('click', cardCloseClickHandler);
@@ -83,6 +95,11 @@
     showRelatedCard(evt.target.closest('button'));
   };
 
+  // Коллбэки загрузки пинов
+  var pinsLoadHandler = function (data) {
+    MAP_PINS_ELEMENT.appendChild(renderPins(data));
+  };
+
   // Обработка событий на главном пине
   var startCoords = {
     x: undefined,
@@ -97,7 +114,7 @@
 
     startCoords.x = evt.clientX;
     startCoords.y = evt.clientY;
-    PIN_MAIN.style.zIndex = 1000;
+    PIN_MAIN.style.zIndex = PIN_MAIN_ZINDEX;
 
   };
 
@@ -134,15 +151,15 @@
     } else {
       PIN_MAIN.style.left = newLeft + 'px';
     }
-
     window.form.setAddress(getAddress().x, getAddress().y);
   };
+
 
   var pinMainMouseUpHandler = function () {
     document.removeEventListener('mousemove', pinMainMouseMoveHandler);
     document.removeEventListener('mouseup', pinMainMouseUpHandler);
     window.form.setAddress(getAddress().x, getAddress().y);
-    MAP_PINS_ELEMENT.appendChild(renderPins(window.data.cardsData));
+    window.backend.load(pinsLoadHandler, errorHandler);
   };
 
   // Получить адрес главного пина. (Вспомогательные функции, чтобы вызывать установку адреса в форму отсюда, т.к. тут сейчас лежат данные, в зависимости от котороых он вычисляется.)
@@ -167,8 +184,8 @@
   // Создание элемента со всеми пинами
   var renderPins = function (sourceArr) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.data.cardsData.length; i++) {
-      fragment.appendChild(window.pin.renderPin(sourceArr[i], PIN));
+    for (var i = 0; i < PINS_AMOUNT; i++) {
+      fragment.appendChild(window.pin.renderPin(i, sourceArr[i], PIN));
     }
     return fragment;
   };

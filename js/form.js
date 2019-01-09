@@ -117,14 +117,15 @@
     window.messages.renderErrorMessage(errorMessage);
   };
 
-  var loadHandler = function () {
+  var formLoadHandler = function () {
     AD_FORM.reset();
+    window.map.mapReset();
     window.messages.renderSuccessMessage();
   };
 
   AD_FORM.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.upload(new FormData(AD_FORM), loadHandler, errorHandler);
+    window.backend.upload(new FormData(AD_FORM), formLoadHandler, errorHandler);
   });
 
   window.form = {

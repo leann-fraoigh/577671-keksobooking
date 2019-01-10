@@ -120,8 +120,8 @@
   // Обработка событий на главном пине
 
   var setPinMainDefaultCoords = function () {
-    PIN_MAIN.style.top = startMainPinCoords.y;
-    PIN_MAIN.style.left = startMainPinCoords.x;
+    PIN_MAIN.style.top = startMainPinCoords.y + 'px';
+    PIN_MAIN.style.left = startMainPinCoords.x + 'px';
   };
 
   var startCoords = {
@@ -206,7 +206,7 @@
 
   // Запуск всего
 
-  window.form.updateAddress(false);
+  // window.form.updateAddress(false);
 
   PIN_MAIN.addEventListener('mousedown', pinMainMouseDownHandler);
 

@@ -48,6 +48,8 @@
     addressInput.value = window.map.getMainPinLocation(isActiveMap);
   };
 
+  updateAddress(false);
+
   // Валидация формы
   var typeChangeHandler = function (evt) {
     var price = window.data.getMinprice(evt.target.value);
@@ -122,9 +124,9 @@
   };
 
   var loadHandler = function () {
-    // AD_FORM.reset();
     deactivateForm();
     window.map.mapReset();
+    updateAddress(false);
     window.messages.renderSuccessMessage();
   };
 

@@ -36,7 +36,6 @@
     window.utils.cleanNode(MAP_PINS_ELEMENT, '.map__pin:not(.map__pin--main)');
     MAP_ELEMENT.classList.add('map--faded');
     setPinMainDefaultCoords();
-    window.form.updateAddress(false);
   };
 
   // Коллбэк ошибки загурзки
@@ -205,8 +204,6 @@
   };
 
   // Запуск всего
-
-  // window.form.updateAddress(true);
 
   PIN_MAIN.addEventListener('mousedown', pinMainMouseDownHandler);
 

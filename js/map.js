@@ -206,7 +206,7 @@
 
   // Запуск всего
 
-  // window.form.updateAddress(false);
+  // window.form.updateAddress(true);
 
   PIN_MAIN.addEventListener('mousedown', pinMainMouseDownHandler);
 

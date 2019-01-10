@@ -38,11 +38,9 @@
 
   var deactivateForm = function () {
     AD_FORM.reset();
-    AD_FORM.classList.add('notice__form--disabled');
-
-    window.map.deactivateMap();
-
+    AD_FORM.classList.add('ad-form--disabled');
     updateAddress(false);
+    disableForm();
   };
 
   var updateAddress = function (isActiveMap) {
@@ -124,7 +122,8 @@
   };
 
   var loadHandler = function () {
-    AD_FORM.reset();
+    // AD_FORM.reset();
+    deactivateForm();
     window.map.mapReset();
     window.messages.renderSuccessMessage();
   };

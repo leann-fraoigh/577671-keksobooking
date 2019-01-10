@@ -8,9 +8,8 @@
   var MAP_PINS_ELEMENT = MAP_ELEMENT.querySelector('.map__pins');
   var MAP_FILTERS_ELEMENT = MAP_ELEMENT.querySelector('.map__filters-container');
   var PIN_MAIN = document.querySelector('.map__pin--main');
-  var PIN_MAIN_WIDTH = 66;
-  var PIN_MAIN_HEIGTH = 80;
-  var PIN_MAIN_CORRECTION = 48;
+  var PIN_MAIN_DIAMETER = 66;
+  var PIN_MAIN_CORRECTION = 14;
   var PIN_MAIN_ZINDEX = 1000;
   var CARD_TEMPLATE = document.querySelector('#card').content.querySelector('.map__card');
   var PIN = {
@@ -36,11 +35,8 @@
     window.utils.cleanNode(MAP_ELEMENT, '.map__card');
     window.utils.cleanNode(MAP_PINS_ELEMENT, '.map__pin:not(.map__pin--main)');
     MAP_ELEMENT.classList.add('map--faded');
-
-    // PIN_MAIN.style.top = '';
-    // PIN_MAIN.style.left = '';
     setPinMainDefaultCoords();
-    setFormDefaultAddress();
+    window.form.updateAddress(false);
   };
 
   // Коллбэк ошибки загурзки
@@ -165,57 +161,39 @@
 
     if (newTop <= (MAP_HEIGTH_MIN)) {
       PIN_MAIN.style.top = MAP_HEIGTH_MIN + 'px';
-    } else if (newTop >= MAP_HEIGTH_MAX - PIN_MAIN_HEIGTH) {
-      PIN_MAIN.style.top = MAP_HEIGTH_MAX - PIN_MAIN_HEIGTH + 'px';
+    } else if (newTop >= MAP_HEIGTH_MAX - (PIN_MAIN_DIAMETER + PIN_MAIN_CORRECTION)) {
+      PIN_MAIN.style.top = MAP_HEIGTH_MAX - (PIN_MAIN_DIAMETER + PIN_MAIN_CORRECTION) + 'px';
     } else {
       PIN_MAIN.style.top = newTop + 'px';
     }
 
     if (newLeft <= 0) {
       PIN_MAIN.style.left = 0 + 'px';
-    } else if (newLeft >= (MAP_ELEMENT.clientWidth - PIN_MAIN_WIDTH)) {
-      PIN_MAIN.style.left = (MAP_ELEMENT.clientWidth - PIN_MAIN_WIDTH) + 'px';
+    } else if (newLeft >= (MAP_ELEMENT.clientWidth - PIN_MAIN_DIAMETER)) {
+      PIN_MAIN.style.left = (MAP_ELEMENT.clientWidth - PIN_MAIN_DIAMETER) + 'px';
     } else {
       PIN_MAIN.style.left = newLeft + 'px';
     }
-    setFormAddress();
+    window.form.updateAddress(true);
   };
 
 
   var pinMainMouseUpHandler = function () {
     document.removeEventListener('mousemove', pinMainMouseMoveHandler);
     document.removeEventListener('mouseup', pinMainMouseUpHandler);
-    setFormAddress();
+    window.form.updateAddress(true);
     window.backend.load(pinsLoadHandler, errorHandler);
   };
 
-  // Получить адрес главного пина. (Вспомогательные функции, чтобы вызывать установку адреса в форму отсюда, т.к. тут сейчас лежат данные, в зависимости от котороых он вычисляется.)
-
-  function getMainPinLocation(isActive) {
+  // Получить адрес главного пина.
+  var getMainPinLocation = function (isActive) {
     var pinCorrection = isActive ? PIN_MAIN_CORRECTION : 0;
 
-    var locationX = PIN_MAIN.offsetLeft;
-    var locationY = PIN_MAIN.offsetTop + pinCorrection;
+    var locationX = PIN_MAIN.offsetLeft + PIN_MAIN_DIAMETER / 2;
+    var locationY = PIN_MAIN.offsetTop + PIN_MAIN_DIAMETER + pinCorrection;
 
     return (locationX + ', ' + locationY);
-  }
-
-  var setFormAddress = function () {
-    var getAddress = function () {
-      var address = {
-        x: PIN_MAIN.offsetLeft + PIN_MAIN_WIDTH / 2,
-        y: PIN_MAIN.offsetTop + PIN_MAIN_HEIGTH,
-      };
-      return address;
-    };
-    window.form.setAddress(getAddress().x, getAddress().y);
   };
-
-  var setFormDefaultAddress = function () {
-    window.form.setAddress(PIN_MAIN.offsetLeft + PIN_MAIN_WIDTH / 2, PIN_MAIN.offsetTop + PIN_MAIN_WIDTH / 2);
-  };
-
-  setFormDefaultAddress();
 
   // Создание элемента со всеми пинами
   var renderPins = function (sourceArr) {
@@ -227,6 +205,8 @@
   };
 
   // Запуск всего
+
+  window.form.updateAddress(false);
 
   PIN_MAIN.addEventListener('mousedown', pinMainMouseDownHandler);
 

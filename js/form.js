@@ -119,10 +119,6 @@
 
   AD_FORM.querySelector('select#timeout').addEventListener('change', timeinChangeHandler);
 
-  var setAddress = function (x, y) {
-    AD_FORM.querySelector('#address').value = x + ', ' + y;
-  };
-
   var errorHandler = function (errorMessage) {
     window.messages.renderErrorMessage(errorMessage);
   };
@@ -139,10 +135,7 @@
   });
 
   window.form = {
-    setAddress: setAddress,
     activateForm: activateForm,
-    deactivateForm: deactivateForm,
-    disableForm: disableForm,
     updateAddress: updateAddress
   };
 

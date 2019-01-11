@@ -29,12 +29,26 @@
 
   };
 
-  var deactivateForm = function () {
+  var disableForm = function () {
     disableElements(ALL_INPUTS);
     disableElements(ALL_SELECTS);
   };
 
-  deactivateForm();
+  disableForm();
+
+  var deactivateForm = function () {
+    AD_FORM.reset();
+    AD_FORM.classList.add('ad-form--disabled');
+    updateAddress(false);
+    disableForm();
+  };
+
+  var updateAddress = function (isActiveMap) {
+    var addressInput = AD_FORM.querySelector('[name="address"]');
+    addressInput.value = window.map.getMainPinLocation(isActiveMap);
+  };
+
+  updateAddress(false);
 
   // Валидация формы
   var typeChangeHandler = function (evt) {
@@ -105,19 +119,25 @@
 
   AD_FORM.querySelector('select#timeout').addEventListener('change', timeinChangeHandler);
 
-  var setAddress = function (x, y) {
-    AD_FORM.querySelector('#address').value = x + ', ' + y;
+  var errorHandler = function (errorMessage) {
+    window.messages.renderErrorMessage(errorMessage);
   };
 
-  var setDefaulfAddress = function (x, y) {
-    AD_FORM.querySelector('#address').value = x + ', ' + y;
+  var loadHandler = function () {
+    deactivateForm();
+    window.map.mapReset();
+    updateAddress(false);
+    window.messages.renderSuccessMessage();
   };
+
+  AD_FORM.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.upload(new FormData(AD_FORM), loadHandler, errorHandler);
+  });
 
   window.form = {
-    setAddress: setAddress,
-    setDefaultAddress: setDefaulfAddress,
     activateForm: activateForm,
-    deactivateForm: deactivateForm,
+    updateAddress: updateAddress
   };
 
 })();

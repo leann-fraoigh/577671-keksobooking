@@ -127,23 +127,7 @@
     return (locationX + ', ' + locationY);
   };
 
-  // Запуск всего
-
   PIN_MAIN.addEventListener('mousedown', pinMainMouseDownHandler);
-
-  // MAP_ELEMENT.addEventListener('click', function (evt) {
-  //   if (checkIfPin(evt)) {
-  //     window.pin.pinClickHandler(evt);
-  //   }
-  // });
-
-  // MAP_ELEMENT.addEventListener('keydown', function (evt) {
-  //   if (evt.keyCode === window.keyCode.ENTER) {
-  //     if (checkIfPin(evt)) {
-  //       window.pin.pinKeydownHandler(evt);
-  //     }
-  //   }
-  // });
 
   window.map = {
     mapReset: mapReset,

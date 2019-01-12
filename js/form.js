@@ -3,6 +3,7 @@
   var AD_FORM = document.querySelector('.ad-form');
   var ALL_SELECTS = document.querySelectorAll('select');
   var ALL_INPUTS = document.querySelectorAll('input');
+  var RESET_FORM_BUTTON = document.querySelector('.ad-form__reset');
 
   // Ограничения для формы
   var ROOM_NUMBER_NO_GUESTS = '100';
@@ -133,6 +134,13 @@
   AD_FORM.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.backend.upload(new FormData(AD_FORM), loadHandler, errorHandler);
+  });
+
+  RESET_FORM_BUTTON.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    deactivateForm();
+    window.map.mapReset();
+    updateAddress(false);
   });
 
   window.form = {

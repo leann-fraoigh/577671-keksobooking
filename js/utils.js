@@ -11,7 +11,12 @@
     }
   };
 
+  var hideNode = function (node) {
+    node.style = 'display: none';
+  };
+
   window.utils = {
     cleanNode: cleanNode,
+    hideNode: hideNode,
   };
 })();

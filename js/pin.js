@@ -6,7 +6,7 @@
     PIN_WIDTH: 50,
     PIN_HEIGTH: 70,
   };
-  var PINS_AMOUNT = 10;
+  var PINS_AMOUNT = 5;
 
   // Отрисовка одного пина. Data -- новые данные для этого пина. Pin -- объект с характеристиками стандартного пина.
   var renderPin = function (id, data, pin) {

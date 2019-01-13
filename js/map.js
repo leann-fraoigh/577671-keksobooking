@@ -4,9 +4,9 @@
   var MAP_HEIGTH_MAX = 704;
 
   // Элементы
-  var MAP_ELEMENT = document.querySelector('.map');
-  var MAP_PINS_ELEMENT = MAP_ELEMENT.querySelector('.map__pins');
-  var MAP_FILTERS_ELEMENT = MAP_ELEMENT.querySelector('.map__filters-container');
+  var MAP = document.querySelector('.map');
+  var MAP_PINS = MAP.querySelector('.map__pins');
+  var MAP_FILTERS = MAP.querySelector('.map__filters-container');
   var PIN_MAIN = document.querySelector('.map__pin--main');
   var PIN_MAIN_RADIUS = 33;
   var PIN_MAIN_CORRECTION = 47;
@@ -20,15 +20,15 @@
   // Активация страницы
   var enablePage = function () {
     window.form.activateForm();
-    MAP_ELEMENT.classList.remove('map--faded');
+    MAP.classList.remove('map--faded');
   };
 
   // Перезагрузка карты
 
   var mapReset = function () {
-    window.utils.cleanNode(MAP_ELEMENT, '.map__card');
-    window.utils.cleanNode(MAP_PINS_ELEMENT, '.map__pin:not(.map__pin--main)');
-    MAP_ELEMENT.classList.add('map--faded');
+    window.utils.cleanNode(MAP, '.map__card');
+    window.utils.cleanNode(MAP_PINS, '.map__pin:not(.map__pin--main)');
+    MAP.classList.add('map--faded');
     setPinMainDefaultCoords();
   };
 
@@ -40,7 +40,7 @@
   // Отрисовка новой карточки
   var showRelatedCard = function (pin) {
     window.card.removeCard();
-    MAP_ELEMENT.insertBefore(window.card.createCard(pin), MAP_FILTERS_ELEMENT);
+    MAP.insertBefore(window.card.createCard(pin), MAP_FILTERS);
   };
 
   // Коллбэки загрузки пинов
@@ -53,8 +53,8 @@
 
   var updatePins = function (data) {
     window.card.removeCard();
-    window.utils.cleanNode(MAP_PINS_ELEMENT, '.map__pin:not(.map__pin--main)');
-    MAP_PINS_ELEMENT.appendChild(window.pin.renderPins(window.filter.filter(data)));
+    window.utils.cleanNode(MAP_PINS, '.map__pin:not(.map__pin--main)');
+    MAP_PINS.appendChild(window.pin.renderPins(window.filter.filter(data)));
   };
 
   // Обработка событий на главном пине
@@ -109,8 +109,8 @@
 
     if (newLeft <= 0) {
       PIN_MAIN.style.left = 0 + 'px';
-    } else if (newLeft >= (MAP_ELEMENT.clientWidth - PIN_MAIN_RADIUS * 2)) {
-      PIN_MAIN.style.left = (MAP_ELEMENT.clientWidth - PIN_MAIN_RADIUS * 2) + 'px';
+    } else if (newLeft >= (MAP.clientWidth - PIN_MAIN_RADIUS * 2)) {
+      PIN_MAIN.style.left = (MAP.clientWidth - PIN_MAIN_RADIUS * 2) + 'px';
     } else {
       PIN_MAIN.style.left = newLeft + 'px';
     }

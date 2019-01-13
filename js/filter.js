@@ -25,7 +25,6 @@
   };
 
   var filter = function (data) {
-    console.log(data);
     var correctType = data.
     // Фильр по типу жилья
     filter(function (item) {
@@ -67,25 +66,24 @@
         return item.offer.guests.toString() === Filter.GUESTS.value;
       }
     // Фильр по удобствам
-    })/*.
-    filter(function (item) {
-      for (var i = 0; i < Object.keys(Filter.FEATURES).length; i++) {
-        var k = Object.keys(Filter.FEATURES)[i];
-        var feature = Filter.FEATURES[k];
-        var featureTitle = feature.id.split('-')[1];
-        if (!feature.checked) {
-          return true;
-        } else if (item.offer.features.hasOwnProperty(featureTitle)) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-      return false;
-    })*/;
-
+    });
     return correctType;
   };
+
+  // debugger;
+  // for (var i = 0; i < Object.keys(Filter.FEATURES).length; i++) {
+  //   var k = Object.keys(Filter.FEATURES)[i];
+  //   var feature = Filter.FEATURES[k];
+  //   var featureTitle = feature.id.split('-')[1];
+  //   if (!feature.checked) {
+  //     return true;
+  //   } else if (item.offer.features.hasOwnProperty(featureTitle)) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+  // return false;
 
   var setChangeFilterHandler = function (handler) {
     for (var i = 0; i < (Object.keys(Filter).length - 1); i++) {

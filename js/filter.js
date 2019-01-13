@@ -37,16 +37,24 @@
     } return true;
   };
 
+  var checkIfSelected = function (item, filter) {
+    var i = filter;
+    var title = getFeatuteTitle(i);
+    if (filter.value === 'any') {
+      return true;
+    } else {
+      return item.offer[title].toString() === filter.value;
+    }
+  };
+
   var filter = function (data) {
     var relevantData = data.
+
     // Фильр по типу жилья
     filter(function (item) {
-      if (Filter.TYPE.value === 'any') {
-        return true;
-      } else {
-        return item.offer.type === Filter.TYPE.value;
-      }
+      return checkIfSelected(item, Filter.TYPE);
     }).
+
     // Фильр по цене
     filter(function (item) {
       var i = Filter.PRICE.value;
@@ -63,45 +71,18 @@
           return false;
       }
     }).
+
     // Фильр по комнатам
     filter(function (item) {
-      if (Filter.ROOMS.value === 'any') {
-        return true;
-      } else {
-        return item.offer.rooms.toString() === Filter.ROOMS.value;
-      }
+      return checkIfSelected(item, Filter.ROOMS);
     }).
+
     // Фильр по гостям
     filter(function (item) {
-      if (Filter.GUESTS.value === 'any') {
-        return true;
-      } else {
-        return item.offer.guests.toString() === Filter.GUESTS.value;
-      }
+      return checkIfSelected(item, Filter.GUESTS);
     });
 
-    // // Фильтр по удобствам
-    // filter(function (item) {
-    //   return checkIfChecked(item, Filter.FEATURES.WIFI);
-    // }).
-    // filter(function (item) {
-    //   return checkIfChecked(item, Filter.FEATURES.DISHWASHER);
-    // }).
-    // filter(function (item) {
-    //   return checkIfChecked(item, Filter.FEATURES.PARKING);
-    // }).
-    // filter(function (item) {
-    //   return checkIfChecked(item, Filter.FEATURES.WASHER);
-    // }).
-    // filter(function (item) {
-    //   return checkIfChecked(item, Filter.FEATURES.ELEVATOR);
-    // }).
-    // filter(function (item) {
-    //   return checkIfChecked(item, Filter.FEATURES.CONDITIONER);
-    // });
-    // return relevantData;
-
-    // Новый фильтр по удобствам
+    // Фильтр по удобствам
     var newData = relevantData;
     var getEvenMmoreRelevantData = function (currentData) {
       var initialArray = currentData;
@@ -113,6 +94,7 @@
       }
       return initialArray;
     };
+
     var EvenMmoreRelevantData = getEvenMmoreRelevantData(newData);
     return (EvenMmoreRelevantData);
   };

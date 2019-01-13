@@ -45,14 +45,10 @@
 
   // Коллбэки загрузки пинов
   var pinsLoadHandler = function (data) {
-    // console.log(data);
-    // window.utils.cleanNode(MAP_PINS_ELEMENT, '.map__pin:not(.map__pin--main)');
-    // MAP_PINS_ELEMENT.appendChild(window.pin.renderPins(data));
-    // updatePins(data);
     updatePins(data);
-    window.filter.setChangeFilterHandler(function () {
+    window.filter.setChangeFilterHandler(window.utils.debounce((function () {
       updatePins(data);
-    });
+    })));
   };
 
   var updatePins = function (data) {

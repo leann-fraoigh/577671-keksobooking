@@ -69,24 +69,19 @@
     // Фильр по удобствам
     })/*.
     filter(function (item) {
-      // for (var key in Filter.FEATURES) {
-      //   if (Filter.FEATURES.hasOwnProperty(key)) {
-      //     if (Filter.FEATURES[key].checked) {
-      //       var featureId = Filter.FEATURES[key].id;
-      //       var feature = featureId.split('-')[1];
-      //       console.log(feature);
-      //       return item.offer.features.hasOwnProperty(feature);
-      //     } else {
-      //       return true;
-      //     }
-      //   }
-      // }
-      for (var i = 0; i < Object.keys(Filter.FEATURES).length - 1; i++) {
+      for (var i = 0; i < Object.keys(Filter.FEATURES).length; i++) {
         var k = Object.keys(Filter.FEATURES)[i];
         var feature = Filter.FEATURES[k];
         var featureTitle = feature.id.split('-')[1];
-        if ()
-        feature.addEventListener('change', handler);
+        if (!feature.checked) {
+          return true;
+        } else if (item.offer.features.hasOwnProperty(featureTitle)) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      return false;
     })*/;
 
     return correctType;

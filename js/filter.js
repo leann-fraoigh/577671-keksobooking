@@ -24,8 +24,21 @@
     middle: 50000,
   };
 
+  var getFeatuteTitle = function (element) {
+    var title = element.id.split('-')[1];
+    return title;
+  };
+
+  var checkIfChecked = function (item, filter) {
+    var i = filter;
+    if (i.checked) {
+      var feature = getFeatuteTitle(i);
+      return item.offer.features.includes(feature);
+    } return true;
+  };
+
   var filter = function (data) {
-    var correctType = data.
+    var relevantData = data.
     // Фильр по типу жилья
     filter(function (item) {
       if (Filter.TYPE.value === 'any') {
@@ -65,25 +78,45 @@
       } else {
         return item.offer.guests.toString() === Filter.GUESTS.value;
       }
-    // Фильр по удобствам
     });
-    return correctType;
+
+    // // Фильтр по удобствам
+    // filter(function (item) {
+    //   return checkIfChecked(item, Filter.FEATURES.WIFI);
+    // }).
+    // filter(function (item) {
+    //   return checkIfChecked(item, Filter.FEATURES.DISHWASHER);
+    // }).
+    // filter(function (item) {
+    //   return checkIfChecked(item, Filter.FEATURES.PARKING);
+    // }).
+    // filter(function (item) {
+    //   return checkIfChecked(item, Filter.FEATURES.WASHER);
+    // }).
+    // filter(function (item) {
+    //   return checkIfChecked(item, Filter.FEATURES.ELEVATOR);
+    // }).
+    // filter(function (item) {
+    //   return checkIfChecked(item, Filter.FEATURES.CONDITIONER);
+    // });
+    // return relevantData;
+
+    // Новый фильтр по удобствам
+    var newData = relevantData;
+    var getEvenMmoreRelevantData = function (currentData) {
+      var initialArray = currentData;
+      for (var i = 0; i < Object.keys(Filter.FEATURES).length; i++) {
+        initialArray = initialArray.filter(function (item) {
+          var feature = Object.keys(Filter.FEATURES)[i];
+          return checkIfChecked(item, Filter.FEATURES[feature]);
+        });
+      }
+      return initialArray;
+    };
+    var EvenMmoreRelevantData = getEvenMmoreRelevantData(newData);
+    return (EvenMmoreRelevantData);
   };
 
-  // debugger;
-  // for (var i = 0; i < Object.keys(Filter.FEATURES).length; i++) {
-  //   var k = Object.keys(Filter.FEATURES)[i];
-  //   var feature = Filter.FEATURES[k];
-  //   var featureTitle = feature.id.split('-')[1];
-  //   if (!feature.checked) {
-  //     return true;
-  //   } else if (item.offer.features.hasOwnProperty(featureTitle)) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-  // return false;
 
   var setChangeFilterHandler = function (handler) {
     for (var i = 0; i < (Object.keys(Filter).length - 1); i++) {

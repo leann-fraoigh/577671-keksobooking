@@ -30,7 +30,7 @@
   // Создание элемента со всеми пинами
   var renderPins = function (sourceArr) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < PINS_AMOUNT; i++) {
+    for (var i = 0; i < PINS_AMOUNT && i < sourceArr.length; i++) {
       fragment.appendChild(renderPin(i, sourceArr[i], PIN));
     }
     return fragment;

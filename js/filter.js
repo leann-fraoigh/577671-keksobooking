@@ -16,21 +16,33 @@
     FEATURES: FILTERS_FORM.querySelector('#housing-features'),
   };
 
-  // var filter = function (data) {
-  //   var correctType = data.filter(function (item) {
-  //     if (Filter.TYPE.value === '' || Filter.TYPE.value === 'any') {
-  //       return true;
-  //     } else {
-  //       return item.offer.type === Filter.TYPE.value;
-  //     }
-  //   });
-  //   return correctType;
-  // };
+  var Price = {
+    low: 10000,
+    middle: 50000,
+  };
 
   var filter = function (data) {
-    var correctType = data.filter(function (item) {
-      return item.offer.type === Filter.TYPE.value;
+    console.log(data);
+    var correctType = data.
+    filter(function (item) {
+      if (Filter.TYPE.value === 'any') {
+        return true;
+      } else {
+        return item.offer.type === Filter.TYPE.value;
+      }
+    }).
+    filter(function (item) {
+      if (Filter.PRICE.value === 'any') {
+        return true;
+      } else if (Filter.PRICE.value === 'low') {
+        return item.offer.price < Price.low;
+      } else if (Filter.PRICE.value === 'middle') {
+        return item.offer.price >= Price.low || item.offer.price <= Price.middle;
+      } else if (Filter.PRICE.value === 'middle') {
+        return item.offer.price > Price.middle;
+      }
     });
+
     return correctType;
   };
 

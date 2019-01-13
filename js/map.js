@@ -45,8 +45,20 @@
 
   // Коллбэки загрузки пинов
   var pinsLoadHandler = function (data) {
+    // console.log(data);
     window.utils.cleanNode(MAP_PINS_ELEMENT, '.map__pin:not(.map__pin--main)');
     MAP_PINS_ELEMENT.appendChild(window.pin.renderPins(data));
+    window.filter.setChangeFilterHandler(window.pin.updatePins);
+    // updatePins(data);
+    window.filter.setChangeFilterHandler(function () {
+      updatePins(data);
+    });
+  };
+
+  var updatePins = function (data) {
+    window.utils.cleanNode(MAP_PINS_ELEMENT, '.map__pin:not(.map__pin--main)');
+    window.card.removeCard();
+    MAP_PINS_ELEMENT.appendChild(window.pin.renderPins(window.filter.filter(data)));
   };
 
   // Обработка событий на главном пине

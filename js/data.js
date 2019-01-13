@@ -27,8 +27,16 @@
     return price;
   };
 
+  var apartments = {};
+
+  var makeApartmentsDataArray = function (data) {
+    apartments = data;
+  };
+
   window.data = {
     getMinprice: getMinprice,
+    makeApartmentsDataArray: makeApartmentsDataArray,
+    apartments: apartments,
   };
 })();
 

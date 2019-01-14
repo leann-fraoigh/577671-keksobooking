@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var DEBOUNCE_INTERVAL = 500; // ms
+
   // Удаление элеемента
   var cleanNode = function (parentElement, targetEleme) {
     var elementsToRemove = parentElement.querySelectorAll(targetEleme);
@@ -16,8 +18,6 @@
   };
 
   // Дебаунс
-  var DEBOUNCE_INTERVAL = 500; // ms
-
   var debounce = function (cb) {
     var lastTimeout = null;
     return function () {

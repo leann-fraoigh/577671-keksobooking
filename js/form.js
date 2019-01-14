@@ -35,8 +35,6 @@
     disableElements(ALL_SELECTS);
   };
 
-  disableForm();
-
   var deactivateForm = function () {
     AD_FORM.reset();
     AD_FORM.classList.add('ad-form--disabled');
@@ -49,8 +47,6 @@
     addressInput.value = window.map.getMainPinLocation(isActiveMap);
   };
 
-  updateAddress(false);
-
   // Валидация формы
   var typeChangeHandler = function (evt) {
     var price = window.data.getMinprice(evt.target.value);
@@ -58,12 +54,12 @@
     AD_FORM.querySelector('#price').placeholder = price;
   };
 
-  AD_FORM.querySelector('select#type').addEventListener('change', typeChangeHandler);
+  var capacityOptions = AD_FORM.querySelector('#capacity');
 
   var roomNumberChangeHandler = function (evt) {
     var roomNumber = evt.target.value;
-    for (var j = 0; j < AD_FORM.querySelector('#capacity').length; j++) {
-      var capacityOption = AD_FORM.querySelector('#capacity')[j];
+    for (var j = 0; j < capacityOptions.length; j++) {
+      var capacityOption = capacityOptions[j];
       if (roomNumber === ROOM_NUMBER_NO_GUESTS && capacityOption.value !== '0') {
         capacityOption.disabled = true;
       } else if (roomNumber === ROOM_NUMBER_NO_GUESTS && capacityOption.value === '0') {
@@ -81,16 +77,17 @@
     checkCapacityValidity();
   };
 
+
   var checkCapacityValidity = function () {
-    for (var i = 0; i < AD_FORM.querySelector('#capacity').length; i++) {
-      var j = AD_FORM.querySelector('#capacity')[i];
-      if (j.selected === true) {
-        if (j.disabled === true) {
-          AD_FORM.querySelector('#capacity').valid = false;
-          AD_FORM.querySelector('#capacity').setCustomValidity('Данное число мест не доступно при выбранном количестве комнат');
+    for (var i = 0; i < capacityOptions.length; i++) {
+      var option = capacityOptions[i];
+      if (option.selected === true) {
+        if (option.disabled === true) {
+          capacityOptions.valid = false;
+          capacityOptions.setCustomValidity('Данное число мест не доступно при выбранном количестве комнат');
         } else {
-          AD_FORM.querySelector('#capacity').valid = true;
-          AD_FORM.querySelector('#capacity').setCustomValidity('');
+          capacityOptions.valid = true;
+          capacityOptions.setCustomValidity('');
         }
       }
     }
@@ -103,6 +100,8 @@
       targetSelectOptions = AD_FORM.querySelectorAll('select#timeout option');
     } else if (evt.target.id === 'timeout') {
       targetSelectOptions = AD_FORM.querySelectorAll('select#timein option');
+    } else {
+      return;
     }
 
     targetSelectOptions.forEach(function (element) {
@@ -111,6 +110,15 @@
       }
     });
   };
+
+  var loadHandler = function () {
+    deactivateForm();
+    window.map.mapReset();
+    updateAddress(false);
+    window.messages.renderSuccessMessage();
+  };
+
+  AD_FORM.querySelector('select#type').addEventListener('change', typeChangeHandler);
 
   AD_FORM.querySelector('select#room_number').addEventListener('change', roomNumberChangeHandler);
 
@@ -124,13 +132,6 @@
     window.messages.renderErrorMessage(errorMessage);
   };
 
-  var loadHandler = function () {
-    deactivateForm();
-    window.map.mapReset();
-    updateAddress(false);
-    window.messages.renderSuccessMessage();
-  };
-
   AD_FORM.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.backend.upload(new FormData(AD_FORM), loadHandler, errorHandler);
@@ -142,6 +143,10 @@
     window.map.mapReset();
     updateAddress(false);
   });
+
+  disableForm();
+
+  updateAddress(false);
 
   window.form = {
     activateForm: activateForm,

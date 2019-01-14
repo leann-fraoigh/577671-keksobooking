@@ -11,6 +11,7 @@
     var node = ERROR_MESSAGE_TEMPLATE.cloneNode(true);
     node.querySelector('.error__message').textContent = message;
     document.querySelector('main').appendChild(node);
+
     var errorElement = document.querySelector('main .error');
     errorElement.style.zIndex = ERROR_MESSAGE_ZINDEX;
     // Добавление обработчиков, закрывающийх объявление

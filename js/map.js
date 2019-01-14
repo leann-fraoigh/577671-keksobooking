@@ -100,9 +100,9 @@
 
 
     if (newTop <= (MAP_HEIGTH_MIN)) {
-      PIN_MAIN.style.top = MAP_HEIGTH_MIN + 'px';
-    } else if (newTop >= MAP_HEIGTH_MAX - (PIN_MAIN_RADIUS * 2 + PIN_MAIN_CORRECTION)) {
-      PIN_MAIN.style.top = MAP_HEIGTH_MAX - (PIN_MAIN_RADIUS * 2 + PIN_MAIN_CORRECTION) + 'px';
+      PIN_MAIN.style.top = MAP_HEIGTH_MIN - PIN_MAIN_CORRECTION + 'px';
+    } else if (newTop >= MAP_HEIGTH_MAX - (PIN_MAIN_RADIUS + PIN_MAIN_CORRECTION)) {
+      PIN_MAIN.style.top = MAP_HEIGTH_MAX - (PIN_MAIN_RADIUS + PIN_MAIN_CORRECTION) + 'px';
     } else {
       PIN_MAIN.style.top = newTop + 'px';
     }

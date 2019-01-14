@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+  var CARD_TEMPLATE = document.querySelector('#card').content.querySelector('.map__card');
 
   // Добавление иконок удобств
   var renderCardFeatures = function (card, element) {
@@ -30,41 +31,126 @@
     }
   };
 
+  // Проверяет наличие данных по ключу feature, при наличии добавляет feature в атрибут (attribute) элемента (node), при отсутствии скрывает элемент. (text -- скрока, добавляющаяся в атридут после feature (если есть).
+  var setFeature = function (node, attribute, feature, text) {
+    if (!feature) {
+      window.utils.hideNode(node);
+    } else {
+      var att1 = attribute;
+      if (!text) {
+        node[att1] = feature;
+      } else {
+        node[att1] = feature + text;
+      }
+    }
+  };
+
   // Генерация элемента с карточкой
   var renderCard = function (card, template) {
 
     var cardElement = template.cloneNode(true);
-    cardElement.querySelector('.popup__avatar').src = card.author.avatar;
-    cardElement.querySelector('.popup__title').textContent = card.offer.title;
-    cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
-    cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
-    cardElement.querySelector('.popup__type').textContent = window.data.getTitle(card.offer.type);
+    // Добавление аватара
+    setFeature(cardElement.querySelector('.popup__avatar'), 'src', card.author.avatar);
 
-    // Добавление числа комнат и гостей (склонение только для числа комнат  <= 20)
-    if (card.offer.rooms === 1) {
-      cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комната для ' + card.offer.guests + ' гостей';
-    } else if (card.offer.rooms < 5) {
-      cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
-    } else {
-      cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнат для ' + card.offer.guests + ' гостей';
+    // Добавление заголовка
+    setFeature(cardElement.querySelector('.popup__title'), 'textContent', card.offer.title);
+
+    // Добавление адреса
+    setFeature(cardElement.querySelector('.popup__text--address'), 'textContent', card.offer.address);
+
+    // Добавление типа
+    setFeature(cardElement.querySelector('.popup__type'), 'textContent', card.offer.type);
+
+    // Добавление цены
+    setFeature(cardElement.querySelector('.popup__text--price'), 'textContent', card.offer.price, '₽/ночь');
+
+    // Добавление числа комнат и гостей (склонение для гостей и числа комнат  <= 20)
+    var text = '';
+    var parentNode = cardElement.querySelector('.popup__text--capacity');
+
+    switch (card.offer.guests) {
+      case 1:
+        text = card.offer.guests + ' гостя';
+        break;
+      default:
+        text = card.offer.guests + ' гостей';
     }
-    // Конец добавления числа комнат и гостей
-    cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
 
+    switch (card.offer.rooms) {
+      case 0:
+        window.utils.hideNode(cardElement.querySelector('.popup__text--capacity'));
+        break;
+      case 1:
+        parentNode.textContent = card.offer.rooms + ' комната для ' + text;
+        break;
+      case 2:
+      case 3:
+      case 4:
+        parentNode.textContent = card.offer.rooms + ' комнаты для ' + text;
+        break;
+      default:
+        parentNode.textContent = card.offer.rooms + ' комнат для ' + text;
+    }
 
-    renderCardFeatures(card, cardElement);
+    // Добавление информации о чекине и чекауте
+    if (!card.offer.checkin && !card.offer.checkin) {
+      window.utils.hideNode(cardElement.querySelector('.popup__text--time'));
+    } else {
+      cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
+    }
+    // Добавление списка удобств
+    if (card.offer.features.length === 0) {
+      window.utils.hideNode(cardElement.querySelector('.popup__features'));
+    } else {
+      renderCardFeatures(card, cardElement);
+    }
 
     // Добавление описания
-    cardElement.querySelector('.popup__description').textContent = card.offer.description;
+    setFeature(cardElement.querySelector('.popup__description'), 'textContent', card.offer.description);
 
-    renderCardPictures(card, cardElement);
+    // Добавление фото
+    if (card.offer.photos.length === 0) {
+      window.utils.hideNode(cardElement.querySelector('.popup__photos'));
+    } else {
+      renderCardPictures(card, cardElement);
+    }
 
     cardElement.style.zIndex = 2000;
+
+    // Добавление обработчиков событий на кнопку закрытия
+    var cardClose = cardElement.querySelector('.popup__close');
+    cardClose.addEventListener('click', cardCloseClickHandler);
+    document.addEventListener('keydown', cardKeydownHandler);
 
     return cardElement;
   };
 
+  // Удаление карточки
+  var removeCard = function () {
+    window.utils.cleanNode(document, '.map__card.popup');
+  };
+
+  var cardCloseClickHandler = function (evt) {
+    evt.preventDefault();
+    removeCard(evt);
+  };
+
+  var cardKeydownHandler = function (evt) {
+    if (evt.keyCode === window.keyCode.ESC) {
+      evt.preventDefault();
+      removeCard(evt);
+    }
+  };
+
+  // Создание элемента карточки
+  var createCard = function (card) {
+    var fragment = document.createDocumentFragment();
+    fragment.appendChild(renderCard(card, CARD_TEMPLATE));
+    return fragment;
+  };
+
   window.card = {
-    renderCard: renderCard,
+    createCard: createCard,
+    removeCard: removeCard,
   };
 })();

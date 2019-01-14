@@ -4,20 +4,14 @@
   var MAP_HEIGTH_MAX = 704;
 
   // Элементы
-  var MAP_ELEMENT = document.querySelector('.map');
-  var MAP_PINS_ELEMENT = MAP_ELEMENT.querySelector('.map__pins');
-  var MAP_FILTERS_ELEMENT = MAP_ELEMENT.querySelector('.map__filters-container');
+  var MAP = document.querySelector('.map');
+  var MAP_PINS = MAP.querySelector('.map__pins');
+  var MAP_FILTERS = MAP.querySelector('.map__filters-container');
   var PIN_MAIN = document.querySelector('.map__pin--main');
-  var PIN_MAIN_DIAMETER = 66;
-  var PIN_MAIN_CORRECTION = 14;
+  var PIN_MAIN_RADIUS = 33;
+  var PIN_MAIN_CORRECTION = 47;
   var PIN_MAIN_ZINDEX = 1000;
-  var CARD_TEMPLATE = document.querySelector('#card').content.querySelector('.map__card');
-  var PIN = {
-    PIN_TEMPLATE: document.querySelector('#pin').content.querySelector('.map__pin'),
-    PIN_WIDTH: 50,
-    PIN_HEIGTH: 70,
-  };
-  var PINS_AMOUNT = 5;
+
   var startMainPinCoords = {
     x: PIN_MAIN.offsetLeft,
     y: PIN_MAIN.offsetTop,
@@ -26,15 +20,15 @@
   // Активация страницы
   var enablePage = function () {
     window.form.activateForm();
-    MAP_ELEMENT.classList.remove('map--faded');
+    MAP.classList.remove('map--faded');
   };
 
   // Перезагрузка карты
 
   var mapReset = function () {
-    window.utils.cleanNode(MAP_ELEMENT, '.map__card');
-    window.utils.cleanNode(MAP_PINS_ELEMENT, '.map__pin:not(.map__pin--main)');
-    MAP_ELEMENT.classList.add('map--faded');
+    window.utils.cleanNode(MAP, '.map__card');
+    window.utils.cleanNode(MAP_PINS, '.map__pin:not(.map__pin--main)');
+    MAP.classList.add('map--faded');
     setPinMainDefaultCoords();
   };
 
@@ -43,77 +37,24 @@
     window.messages.renderErrorMessage(errorMessage);
   };
 
-  // Удаление карточки
-  var removeCard = function () {
-    var card = document.querySelector('.popup');
-    if (card) {
-      card.remove();
-    }
-  };
-
-  var cardCloseClickHandler = function (evt) {
-    evt.preventDefault();
-    removeCard(evt);
-  };
-
-  var cardKeydownHandler = function (evt) {
-    if (evt.keyCode === window.keyCode.ESC) {
-      evt.preventDefault();
-      removeCard(evt);
-    }
-  };
-
-  // Создание элемента карточки
-  var createCard = function (card) {
-    var fragment = document.createDocumentFragment();
-    fragment.appendChild(window.card.renderCard(card, CARD_TEMPLATE));
-    return fragment;
-  };
-
-  // Коллбэк загрузки карточки
-  var cardLoadHandler = function (data) {
-    var index = i;
-    MAP_ELEMENT.insertBefore(createCard(data[i]), MAP_FILTERS_ELEMENT);
-  };
-
   // Отрисовка новой карточки
   var showRelatedCard = function (pin) {
-    removeCard();
-    var i = pin.id;
-    window.backend.load(cardLoadHandler, errorHandler, i);
-    // MAP_ELEMENT.insertBefore(createCard(window.data.cardsData[i]), MAP_FILTERS_ELEMENT);
-    // Добавление обработчиков событий на кнопку закрытия
-    var cardClose = document.querySelector('.popup__close');
-    cardClose.addEventListener('click', cardCloseClickHandler);
-    document.addEventListener('keydown', cardKeydownHandler);
-  };
-
-  // Обработка нажатия на обычный пин
-
-  var checkIfPin = function (evt) {
-    var target = evt.target;
-    var targetButton = target.closest('button');
-    if (targetButton && targetButton.classList.contains('map__pin') && !targetButton.classList.contains('map__pin--main')) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  var pinClickHandler = function (evt) {
-    evt.preventDefault();
-    showRelatedCard(evt.target.closest('button'));
-  };
-
-  var pinKeydownHandler = function (evt) {
-    evt.preventDefault();
-    showRelatedCard(evt.target.closest('button'));
+    window.card.removeCard();
+    MAP.insertBefore(window.card.createCard(pin), MAP_FILTERS);
   };
 
   // Коллбэки загрузки пинов
   var pinsLoadHandler = function (data) {
-    window.utils.cleanNode(MAP_PINS_ELEMENT, '.map__pin:not(.map__pin--main)');
-    MAP_PINS_ELEMENT.appendChild(renderPins(data));
+    updatePins(data);
+    window.filter.setChangeFilterHandler(window.utils.debounce((function () {
+      updatePins(data);
+    })));
+  };
+
+  var updatePins = function (data) {
+    window.card.removeCard();
+    window.utils.cleanNode(MAP_PINS, '.map__pin:not(.map__pin--main)');
+    MAP_PINS.appendChild(window.pin.renderPins(window.filter.filter(data)));
   };
 
   // Обработка событий на главном пине
@@ -142,7 +83,7 @@
 
   var pinMainMouseMoveHandler = function (moveEvt) {
     moveEvt.preventDefault();
-    removeCard();
+    window.card.removeCard();
 
     var shift = {
       x: startCoords.x - moveEvt.clientX,
@@ -159,17 +100,17 @@
 
 
     if (newTop <= (MAP_HEIGTH_MIN)) {
-      PIN_MAIN.style.top = MAP_HEIGTH_MIN + 'px';
-    } else if (newTop >= MAP_HEIGTH_MAX - (PIN_MAIN_DIAMETER + PIN_MAIN_CORRECTION)) {
-      PIN_MAIN.style.top = MAP_HEIGTH_MAX - (PIN_MAIN_DIAMETER + PIN_MAIN_CORRECTION) + 'px';
+      PIN_MAIN.style.top = MAP_HEIGTH_MIN - PIN_MAIN_CORRECTION + 'px';
+    } else if (newTop >= MAP_HEIGTH_MAX - (PIN_MAIN_RADIUS + PIN_MAIN_CORRECTION)) {
+      PIN_MAIN.style.top = MAP_HEIGTH_MAX - (PIN_MAIN_RADIUS + PIN_MAIN_CORRECTION) + 'px';
     } else {
       PIN_MAIN.style.top = newTop + 'px';
     }
 
     if (newLeft <= 0) {
       PIN_MAIN.style.left = 0 + 'px';
-    } else if (newLeft >= (MAP_ELEMENT.clientWidth - PIN_MAIN_DIAMETER)) {
-      PIN_MAIN.style.left = (MAP_ELEMENT.clientWidth - PIN_MAIN_DIAMETER) + 'px';
+    } else if (newLeft >= (MAP.clientWidth - PIN_MAIN_RADIUS * 2)) {
+      PIN_MAIN.style.left = (MAP.clientWidth - PIN_MAIN_RADIUS * 2) + 'px';
     } else {
       PIN_MAIN.style.left = newLeft + 'px';
     }
@@ -188,41 +129,17 @@
   var getMainPinLocation = function (isActive) {
     var pinCorrection = isActive ? PIN_MAIN_CORRECTION : 0;
 
-    var locationX = PIN_MAIN.offsetLeft + PIN_MAIN_DIAMETER / 2;
-    var locationY = PIN_MAIN.offsetTop + PIN_MAIN_DIAMETER + pinCorrection;
+    var locationX = PIN_MAIN.offsetLeft + PIN_MAIN_RADIUS;
+    var locationY = PIN_MAIN.offsetTop + PIN_MAIN_RADIUS + pinCorrection;
 
     return (locationX + ', ' + locationY);
   };
 
-  // Создание элемента со всеми пинами
-  var renderPins = function (sourceArr) {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < PINS_AMOUNT; i++) {
-      fragment.appendChild(window.pin.renderPin(i, sourceArr[i], PIN));
-    }
-    return fragment;
-  };
-
-  // Запуск всего
-
   PIN_MAIN.addEventListener('mousedown', pinMainMouseDownHandler);
-
-  MAP_ELEMENT.addEventListener('click', function (evt) {
-    if (checkIfPin(evt)) {
-      pinClickHandler(evt);
-    }
-  });
-
-  MAP_ELEMENT.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.keyCode.ENTER) {
-      if (checkIfPin(evt)) {
-        pinKeydownHandler(evt);
-      }
-    }
-  });
 
   window.map = {
     mapReset: mapReset,
     getMainPinLocation: getMainPinLocation,
+    showRelatedCard: showRelatedCard,
   };
 })();

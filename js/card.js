@@ -64,16 +64,36 @@
     // Добавление цены
     setFeature(cardElement.querySelector('.popup__text--price'), 'textContent', card.offer.price, '₽/ночь');
 
-    // Добавление числа комнат и гостей (склонение только для числа комнат  <= 20)
-    if (card.offer.rooms === 0) {
-      window.utils.hideNode(cardElement.querySelector('.popup__text--capacity'));
-    } else if (card.offer.rooms === 1) {
-      cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комната для ' + card.offer.guests + ' гостей';
-    } else if (card.offer.rooms < 5) {
-      cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
-    } else {
-      cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнат для ' + card.offer.guests + ' гостей';
+    // Добавление числа комнат и гостей (склонение для гостей и числа комнат  <= 20)
+    var text = '';
+
+    switch (card.offer.guests) {
+      case 1:
+        text = card.offer.guests + ' гостя';
+        break;
+      default:
+        text = card.offer.guests + ' гостей';
     }
+
+    switch (card.offer.rooms) {
+      case 0:
+        window.utils.hideNode(cardElement.querySelector('.popup__text--capacity'));
+        break;
+      case 1:
+        text = card.offer.rooms + ' комната для ' + text;
+        break;
+      case 2:
+      case 3:
+      case 4:
+        text = card.offer.rooms + ' комнаты для ' + text;
+        break;
+      default:
+        text = card.offer.rooms + ' комнат для ' + text;
+    }
+
+    cardElement.querySelector('.popup__text--capacity').textContent = text;
+
+
     // Добавление информации о чекине и чекауте
     if (!card.offer.checkin && !card.offer.checkin) {
       window.utils.hideNode(cardElement.querySelector('.popup__text--time'));

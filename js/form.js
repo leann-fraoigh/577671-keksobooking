@@ -96,12 +96,16 @@
   var timeinChangeHandler = function (evt) {
     var sourceValue = evt.target.value;
     var targetSelectOptions = '';
-    if (evt.target.id === 'timein') {
-      targetSelectOptions = AD_FORM.querySelectorAll('select#timeout option');
-    } else if (evt.target.id === 'timeout') {
-      targetSelectOptions = AD_FORM.querySelectorAll('select#timein option');
-    } else {
-      return;
+    var select = evt.target.id;
+    switch (select) {
+      case 'timein':
+        targetSelectOptions = AD_FORM.querySelectorAll('select#timeout option');
+        break;
+      case 'timeout':
+        targetSelectOptions = AD_FORM.querySelectorAll('select#timein option');
+        break;
+      default:
+        break;
     }
 
     targetSelectOptions.forEach(function (element) {

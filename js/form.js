@@ -122,6 +122,10 @@
     window.messages.renderSuccessMessage();
   };
 
+  var errorHandler = function (errorMessage) {
+    window.messages.renderErrorMessage(errorMessage);
+  };
+
   AD_FORM.querySelector('select#type').addEventListener('change', typeChangeHandler);
 
   AD_FORM.querySelector('select#room_number').addEventListener('change', roomNumberChangeHandler);
@@ -132,9 +136,6 @@
 
   AD_FORM.querySelector('select#timeout').addEventListener('change', timeinChangeHandler);
 
-  var errorHandler = function (errorMessage) {
-    window.messages.renderErrorMessage(errorMessage);
-  };
 
   AD_FORM.addEventListener('submit', function (evt) {
     evt.preventDefault();

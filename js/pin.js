@@ -53,7 +53,6 @@
   window.pin = {
     renderPins: renderPins,
   };
-
 })();
 
 

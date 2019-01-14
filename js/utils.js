@@ -3,7 +3,7 @@
 (function () {
   var DEBOUNCE_INTERVAL = 500; // ms
 
-  // Удаление элеемента
+  // Удаление элемента
   var cleanNode = function (parentElement, targetEleme) {
     var elementsToRemove = parentElement.querySelectorAll(targetEleme);
     if (elementsToRemove) {
@@ -13,6 +13,7 @@
     }
   };
 
+  // Скрытие элемента
   var hideNode = function (node) {
     node.style = 'display: none';
   };

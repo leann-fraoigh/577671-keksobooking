@@ -66,6 +66,7 @@
 
     // Добавление числа комнат и гостей (склонение для гостей и числа комнат  <= 20)
     var text = '';
+    var parentNode = cardElement.querySelector('.popup__text--capacity');
 
     switch (card.offer.guests) {
       case 1:
@@ -80,19 +81,16 @@
         window.utils.hideNode(cardElement.querySelector('.popup__text--capacity'));
         break;
       case 1:
-        text = card.offer.rooms + ' комната для ' + text;
+        parentNode.textContent = card.offer.rooms + ' комната для ' + text;
         break;
       case 2:
       case 3:
       case 4:
-        text = card.offer.rooms + ' комнаты для ' + text;
+        parentNode.textContent = card.offer.rooms + ' комнаты для ' + text;
         break;
       default:
-        text = card.offer.rooms + ' комнат для ' + text;
+        parentNode.textContent = card.offer.rooms + ' комнат для ' + text;
     }
-
-    cardElement.querySelector('.popup__text--capacity').textContent = text;
-
 
     // Добавление информации о чекине и чекауте
     if (!card.offer.checkin && !card.offer.checkin) {
